@@ -1,34 +1,30 @@
 <div align="center">
 
-# Math-To-Manim motion showcase
+# MathViz 动画画廊
 
-### Local GIF studies for the M2M2 art direction
+### 教学动画艺术方向参考
 
-[← Back to root README](../../README.md)
+[← 返回主页](../../README.md)
 
 <br />
 
-<img src="assets/continuous-geometric-picture.gif" alt="GRPO semantic manifold: sibling completions become a geometric policy update across the full scene" width="760" />
-
-**Educational animation should feel like an idea becoming visible.**
+**好的教学动画，应该让概念自己「浮现」出来。**
 
 </div>
 
 ---
 
-Most of these GIFs are local copies of the original Math-To-Manim [`public/readme-showcase/`](https://github.com/HarleyCoops/Math-To-Manim/tree/main/public/readme-showcase) bundle. New M2M2 recovery renders are added only after content validation, so the rewrite has both its artistic north star and current pipeline targets in the same repository.
+这些 GIF 多数来自原始 [Math-To-Manim](https://github.com/HarleyCoops/Math-To-Manim) 项目，作为 MathViz 的艺术方向目标和视觉基准：
 
-They are not just decoration. They define the bar M2M2 should eventually hit:
-
-- cinematic dark-mode mathematics;
-- clean explanatory diagrams;
-- legible notation and staged reveals;
-- geometry, topology, probability, calculus, physics, and ML rendered as motion;
-- README-sized loops that still communicate the core idea.
+- 电影级深色数学渲染
+- 清晰的解释性图表
+- 可读的符号标注和分步揭示
+- 几何、拓扑、概率、微积分、物理、机器学习化为动态
+- 短循环但能传达核心思想
 
 ---
 
-## Featured reel
+## 精选展示
 
 <table>
 <tr>
@@ -37,9 +33,9 @@ They are not just decoration. They define the bar M2M2 should eventually hit:
 <td width="33%"><img src="assets/derivatives-as-slopes.gif" alt="Derivatives as slopes" /></td>
 </tr>
 <tr>
-<td><b>Rhombicosidodecahedron</b><br />A vivid Archimedean solid: blue vertices, warm struts, and 3D symmetry as spectacle.</td>
-<td><b>Cosmic gravity 3D</b><br />Spacetime curvature framed like a science documentary: purple geometry, stars, and field-equation energy.</td>
-<td><b>Derivatives as slopes</b><br />The calculus aha moment: a secant tightens into a tangent so slope becomes visible, not merely symbolic.</td>
+<td><b>大斜方截半二十面体</b><br />阿基米德立体的生动呈现：蓝色顶点、暖色棱线，3D 对称之美。</td>
+<td><b>宇宙引力 3D</b><br />时空弯曲如科学纪录片：紫色几何、星辰与场方程的能量。</td>
+<td><b>导数即斜率</b><br />微积分的顿悟时刻：割线收紧为切线，斜率从符号变为可视。</td>
 </tr>
 <tr>
 <td><img src="assets/lorenz-attractor.gif" alt="Lorenz attractor" /></td>
@@ -47,15 +43,15 @@ They are not just decoration. They define the bar M2M2 should eventually hit:
 <td><img src="assets/prolip-scene.gif" alt="ProLIP scene" /></td>
 </tr>
 <tr>
-<td><b>Lorenz attractor</b><br />Chaos theory with glowing trajectories: sensitive dependence becomes a butterfly-shaped object.</td>
-<td><b>Hopf fibration</b><br />Topology as choreography: nested colored fibers give stereographic projection a spatial rhythm.</td>
-<td><b>ProLIP scene</b><br />Scientific network storytelling with molecular/protein graph motifs and highlighted interactions.</td>
+<td><b>洛伦兹吸引子</b><br />混沌理论：发光轨迹构成蝴蝶形态，敏感依赖变得有形。</td>
+<td><b>霍普夫纤维化</b><br />拓扑如编舞：嵌套彩色纤维赋予球极投影空间韵律。</td>
+<td><b>ProLIP 场景</b><br />科学网络叙事：分子/蛋白质图谱交互可视化。</td>
 </tr>
 </table>
 
 ---
 
-## Teaching diagrams
+## 教学图解
 
 <table>
 <tr>
@@ -65,16 +61,16 @@ They are not just decoration. They define the bar M2M2 should eventually hit:
 <td width="25%"><img src="assets/teaching-hopf.gif" alt="Teaching Hopf" /></td>
 </tr>
 <tr>
-<td><b>Fourier epicycles</b><br />Rotating carriers trace structure from circles; Fourier analysis becomes choreography.</td>
-<td><b>Radius of convergence</b><br />Power-series boundaries become visible on the line, making convergence feel tangible.</td>
-<td><b>Derivative visualization</b><br />Axes, curves, and local linearization establish the foundation before the hero tangent beat.</td>
-<td><b>Teaching Hopf</b><br />A calmer instructional treatment of the fibration, closer to a slide sequence than a pure render.</td>
+<td><b>傅里叶本轮</b><br />旋转载体追踪结构，傅里叶分析化为编舞。</td>
+<td><b>收敛半径</b><br />幂级数边界变得可视化，收敛触手可及。</td>
+<td><b>导数可视化</b><br />坐标轴、曲线、局部线性化，打下切线概念的基础。</td>
+<td><b>教学版霍普夫</b><br />更温和的教学版纤维化处理，接近幻灯片序列。</td>
 </tr>
 </table>
 
 ---
 
-## Advanced math, probability, and ML explainers
+## 高等数学与机器学习
 
 <table>
 <tr>
@@ -83,51 +79,25 @@ They are not just decoration. They define the bar M2M2 should eventually hit:
 <td width="33%"><img src="assets/continuous-geometric-picture.gif" alt="Full GRPO semantic manifold" /></td>
 </tr>
 <tr>
-<td><b>Whiskering exchange</b><br />Category-theoretic structure presented as a formal visual proof rhythm.</td>
-<td><b>Brownian finance</b><br />A dark minimalist transition from calculus and integration toward measure, probability, and sample spaces.</td>
-<td><b>Full GRPO semantic manifold</b><br />A complete 39-second arc: sibling completions become points on a response manifold, then preference turns the objective into motion.</td>
+<td><b>Whiskering 交换</b><br />范畴论结构以形式化视觉证明的节奏呈现。</td>
+<td><b>布朗运动与金融</b><br />从微积分过渡到测度、概率和样本空间的暗色极简风格。</td>
+<td><b>完整 GRPO 语义流形</b><br />39 秒完整弧线：兄弟补全变成响应流形上的点，偏好将目标化为运动。</td>
 </tr>
 </table>
 
 ---
 
-## Full asset inventory
+## 画廊使用指南
 
-| File | Theme | Description |
-| --- | --- | --- |
-| `assets/brownian-finance.gif` | Probability / finance | Calculus accumulation gives way to measure-theoretic uncertainty and sample-space intuition. |
-| `assets/continuous-geometric-picture.gif` | ML / reinforcement learning | Full-length GRPO response-manifold recovery render: a 39-second geometric policy-update arc. |
-| `assets/cosmic-gravity-3d.gif` | Physics | A cinematic spacetime-curvature scene with cosmic scale and documentary pacing. |
-| `assets/derivative-visualization.gif` | Calculus | Foundational curve, axes, and local-linearization setup. |
-| `assets/derivatives-as-slopes.gif` | Calculus | Secant-to-tangent reveal for the slope interpretation of derivatives. |
-| `assets/fourier-epicycles.gif` | Fourier analysis | Rotating vectors compose a curve through epicycle motion. |
-| `assets/grpo-explanation.gif` | ML / reinforcement learning | GRPO explained as a staged visual concept rather than a wall of notation. |
-| `assets/grpo-semantic-manifold.gif` | ML / reinforcement learning | A shorter validated loop extracted from the full GRPO response-manifold render. |
-| `assets/hopf-fibration.gif` | Topology | Dense colored fibers and projection geometry for the Hopf fibration. |
-| `assets/lorenz-attractor.gif` | Dynamical systems | Glowing trajectories reveal the butterfly shape of the Lorenz attractor. |
-| `assets/prolip-scene.gif` | Scientific networks | Molecular/protein interaction graphics with highlighted graph relationships. |
-| `assets/quartic-torus-analysis.gif` | Topology / differential geometry | A full agent-pipeline render of a quartic torus-like implicit surface, showing regularity, genus, curvature, and multi-view topology. |
-| `assets/radius-of-convergence.gif` | Analysis | Function behavior and boundary markers make convergence intervals concrete. |
-| `assets/rhombicosidodecahedron.gif` | Geometry | A polished 3D Archimedean solid with symmetry, depth, and color contrast. |
-| `assets/teaching-hopf.gif` | Topology / pedagogy | A slower explanatory Hopf fibration sequence built for instruction. |
-| `assets/whiskering-exchange.gif` | Category theory | A commutative-diagram style treatment of the whiskering exchange law. |
+当 MathViz 生成出成功的 MP4 时，将最精彩的片段加入此画廊：
+1. 有明确的教学亮点
+2. 文字在 README 尺寸下可读
+3. 色调稳定，无破损帧
+4. 循环足够短，可快速浏览
+5. 描述解释概念本身，而不仅仅是文件名
 
 ---
 
-## Using this gallery as a target
+## 致谢
 
-When M2M2 produces a successful MP4, promote the strongest beat into this gallery only after checking the loop visually. A good showcase GIF should have:
-
-1. a clear teaching moment;
-2. legible text at README size;
-3. a stable palette and no broken frames;
-4. a short enough loop to scan quickly;
-5. a description that explains the concept, not just the file name.
-
-The root README includes an FFmpeg recipe for palette-optimized GIF creation.
-
----
-
-## Credits
-
-Animations originate from [HarleyCoops/Math-To-Manim](https://github.com/HarleyCoops/Math-To-Manim) and are duplicated locally in M2M2 for documentation, continuity, and art direction.
+动画源自 [HarleyCoops/Math-To-Manim](https://github.com/HarleyCoops/Math-To-Manim)，在 MathViz 中保留作为文档连续性和艺术方向参考。

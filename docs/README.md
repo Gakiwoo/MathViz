@@ -1,28 +1,10 @@
-# M2M2 Refactor Docs
+# MathViz 文档
 
-This directory captures the documentation owned by Worker C for the Codex/OpenAI
-Agents SDK refactor.
+## 目录
 
-## Documents
+- [动画画廊](showcase/README.md) — 教学动画展示，精选 Manim 渲染 GIF 案例
 
-- [Architecture](ARCHITECTURE.md) describes the target agent pipeline and worker
-  boundaries.
-- [Roadmap](ROADMAP.md) answers current editable-workflow status and the planned
-  prompt/spec/code iteration loop.
-- [Deployment roadmap](DEPLOYMENT_ROADMAP.md) gives a practical public guide for
-  deploying a Manim animation engine in the cloud.
+## 更多资源
 
-- [Showcase](showcase/README.md) presents local copies of legacy Math-To-Manim
-  GIFs and the visual bar for generated scenes.
-- [Eval strategy](EVAL_STRATEGY.md) explains how prompt, artifact, code, and
-  render checks fit together.
-- [Domain skills](DOMAIN_SKILLS.md) explains how physics/math skills can improve
-  animation intuition, Manim patterns, review loops, and ethical inspiration.
-- [Migration notes](MIGRATION_NOTES.md) summarizes the move from public
-  Math-To-Manim into this refactor.
-
-## Current Fixtures
-
-- `evals/prompt_suite.yaml` contains the initial prompt-level eval suite.
-- `examples/reference/limit_tangent_reference.py` is a small Manim CE reference
-  scene for renderer and style sanity checks.
+- [主页 README](../README.md) — 项目介绍与快速开始
+- [Agent 操作契约](../AGENTS.md) — 代码贡献指南
