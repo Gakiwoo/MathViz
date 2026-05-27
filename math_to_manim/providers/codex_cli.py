@@ -100,7 +100,7 @@ class CodexCliProvider:
 
     def _build_codegen_prompt(self, spec: ManimSceneSpec) -> str:
         return (
-            "You are the M2M2 Manim code generation provider running through Codex CLI.\n"
+            "You are the MathViz Manim code generation provider running through Codex CLI.\n"
             "Return only valid JSON matching the GeneratedCode artifact shape. No Markdown fences.\n"
             "Required JSON keys: scene_name, code, dependencies, metadata.\n"
             "The code must be complete runnable Manim Community Edition Python.\n"
@@ -119,7 +119,7 @@ class CodexCliProvider:
 
     def _build_repair_prompt(self, spec: ManimSceneSpec, generated: GeneratedCode, failure: str) -> str:
         return (
-            "You are the M2M2 Manim repair provider running through Codex CLI.\n"
+            "You are the MathViz Manim repair provider running through Codex CLI.\n"
             "Return only valid JSON matching the GeneratedCode artifact shape. No Markdown fences.\n"
             "Repair the complete code file while preserving scene intent and scene class name.\n"
             "Make surgical fixes for the traceback first; avoid network/file IO and external assets.\n"

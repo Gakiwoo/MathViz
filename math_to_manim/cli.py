@@ -1,4 +1,4 @@
-"""Command-line entrypoint for Math-To-Manim."""
+"""Command-line entrypoint for MathViz."""
 
 from __future__ import annotations
 
@@ -101,7 +101,7 @@ def _format_generate_summary(package: AnimationPackage) -> str:
     run_dir = str(Path(manifest_path).parent) if manifest_path else None
 
     lines = [
-        "Math-To-Manim run complete",
+        "MathViz run complete",
         f"Run dir: {run_dir or 'unknown'}",
     ]
     if render is not None:

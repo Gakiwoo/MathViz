@@ -1,7 +1,7 @@
-"""Codex/OpenAI Agents SDK spine for Math-To-Manim."""
+"""MathViz — AI-powered educational animation pipeline."""
 
 from __future__ import annotations
 
 __all__ = ["__version__"]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

@@ -6,7 +6,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptDir
 Set-Location $RepoRoot
 
-Write-Host "=== M2M2 Render Bootstrap (Windows) ==="
+Write-Host "=== MathViz Render Bootstrap (Windows) ==="
 Write-Host ""
 
 # ---- Step 1: Python venv ----

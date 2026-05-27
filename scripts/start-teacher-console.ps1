@@ -20,7 +20,7 @@ function Write-Info     { Write-Host "  [INFO] $args" -ForegroundColor Gray }
 
 Write-Host ""
 Write-Host "============================================"
-Write-Host "  Math-To-Manim Teacher Console (M2M2)"
+Write-Host "  MathViz Teacher Console"
 Write-Host "============================================"
 Write-Host ""
 

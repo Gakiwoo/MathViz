@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 
 echo.
 echo ============================================
-echo   Math-To-Manim Teacher Console (M2M2)
+echo   MathViz Teacher Console
 echo ============================================
 echo.
 

@@ -1,4 +1,4 @@
-"""Small Manim CE reference scene for M2M2 renderer checks.
+"""Small Manim CE reference scene for MathViz renderer checks.
 
 Render with:
     python -m manim -ql examples/reference/limit_tangent_reference.py LimitTangentReference
