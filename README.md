@@ -11,7 +11,7 @@
 [![OpenAI Agents SDK](https://img.shields.io/badge/OpenAI-Agents%20SDK-111827)](https://openai.github.io/openai-agents-python/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e)](LICENSE)
 
-[动画画廊](docs/showcase/README.md) · [架构文档](docs/ARCHITECTURE.md) · [路线图](docs/ROADMAP.md) · [用户手册](docs/USER_MANUAL.md)
+[动画画廊](docs/showcase/README.md) · [文档目录](docs/README.md)
 
 <br />
 
@@ -32,6 +32,72 @@
 **MathViz 帮助教师、家教和家长将数学问题转化为可审查、可编辑、可复用的视觉化教学动画。**
 
 </div>
+
+---
+
+## 教师控制台
+
+一键启动 Web 界面，无需命令行操作：
+
+```bash
+./scripts/start-teacher-console.sh   # macOS / Linux
+scripts\start-teacher-console.bat    # Windows
+```
+
+启动后浏览器打开 `http://127.0.0.1:7860`，你会看到一个三栏式工作台：
+
+| 区域 | 功能 |
+|------|------|
+| **左侧栏** | 选择 AI 模型（DeepSeek/Qwen/Kimi/GLM/豆包）、输入 API Key |
+| **中间工作区** | 输入数学问题 → 点击「生成」→ 查看生成的 Manim 代码 |
+| **右侧面板** | 渲染预览、健康检查、运行历史 |
+
+所有渲染依赖（Python、FFmpeg、Manim、LaTeX）由脚本自动检测安装，首次启动约 2-5 分钟。
+
+---
+
+## 使用案例
+
+### 案例一：微积分入门 — 导数即斜率
+
+```
+输入：解释导数为什么是斜率
+风格：清晰课堂
+受众：高中生
+```
+
+**生成产物**：
+- 知识图谱标注了「平均变化率→割线→极限→切线斜率」四条前置路径
+- 故事板分 3 幕：坐标系登场 → 两点连线 → 割线收紧为切线
+- 最终输出 45 秒 Manim 动画，逐帧展示 `difference quotient → limit → tangent slope`
+
+### 案例二：几何证明 — 勾股定理
+
+```
+输入：用面积法证明勾股定理
+风格：几何
+受众：初中生
+```
+
+**生成产物**：
+- 自动拆解为直角三角形的三个正方形构图
+- `a² + b² = c²` 通过面积重排可视化
+- 验证报告确认无外部图片依赖，全部使用 Manim 原生图形
+
+### 案例三：傅里叶分析 — 旋转向量
+
+```
+输入：用旋转向量解释傅里叶级数
+风格：电影级
+受众：大学生
+```
+
+**生成产物**：
+- 本轮（epicycle）从圆心扩展到多层旋转载体
+- 每层旋转频率递增，最终复现目标曲线的轨迹
+- 渲染输出 MP4 + GIF 双格式
+
+> 💡 以上案例均为真实生成结果，完整产物存档于 `runs/` 目录下。
 
 ---
 
