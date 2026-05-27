@@ -4,12 +4,12 @@ Best-practice instructions for AI coding agents working in this repository. Trea
 
 ## Project overview
 
-M2M2 is a rewrite of Math-To-Manim: short educational prompts become typed planning artifacts, generated Manim code, optional renders, review outputs, and a reproducible run bundle.
+MathViz (formerly M2M2 / Math-To-Manim) is a typed pipeline that turns short educational prompts into planning artifacts, generated Manim code, optional renders, review outputs, and a reproducible run bundle.
 
 Core promise: story before symbols, geometry before algebra, artifacts before side effects.
 
 Primary package: `math_to_manim`.
-Primary CLI entry points: `m2m2` and `math-to-manim`.
+Primary CLI entry points: `mathviz`, `m2m2`, and `math-to-manim`.
 Primary runtime path: `math_to_manim/pipeline/runner.py`.
 Architecture reference: `docs/ARCHITECTURE.md`.
 Human-facing landing page: `README.md`.

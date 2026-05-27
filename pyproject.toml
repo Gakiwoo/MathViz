@@ -3,13 +3,13 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "math-to-manim-codex"
-version = "0.1.0"
-description = "Codex/OpenAI Agents SDK pipeline for prompt-to-Manim educational animation."
+name = "mathviz"
+version = "0.2.0"
+description = "MathViz — 从数学问题到教学动画的 AI 流水线。输入问题，输出可编辑的 Manim 动画。"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "Math-To-Manim contributors" }]
+authors = [{ name = "Gakiwoo and MathViz contributors" }]
 dependencies = [
   "openai-agents>=0.3.3",
   "pydantic>=1.10,<3",
@@ -33,6 +33,7 @@ web = [
 ]
 
 [project.scripts]
+mathviz = "math_to_manim.cli:main"
 math-to-manim = "math_to_manim.cli:main"
 m2m2 = "math_to_manim.cli:main"
 

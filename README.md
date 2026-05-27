@@ -1,456 +1,200 @@
 <div align="center">
 
-<a href="https://www.star-history.com/#HarleyCoops/Math-To-Manim&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=HarleyCoops/Math-To-Manim&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=HarleyCoops/Math-To-Manim&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=HarleyCoops/Math-To-Manim&type=Date" width="100%" />
-  </picture>
-</a>
+<img src="docs/showcase/assets/continuous-geometric-picture.gif" alt="MathViz 动画展示" width="760" />
 
-# Math to Manim
+# MathViz
 
-### Ask a question → Get A Movie
+### 输入一个问题 → 得到一部教学动画
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3b82f6)](https://www.python.org/)
 [![Manim CE](https://img.shields.io/badge/Manim-CE-f59e0b)](https://www.manim.community/)
 [![OpenAI Agents SDK](https://img.shields.io/badge/OpenAI-Agents%20SDK-111827)](https://openai.github.io/openai-agents-python/)
-[![Hermes assisted](https://img.shields.io/badge/Hermes-learns%20Manim-8b5cf6)](#hermes-learns-manim)
 [![License: MIT](https://img.shields.io/badge/License-MIT-22c55e)](LICENSE)
 
-[Motion showcase](docs/showcase/README.md) · [Roadmap](docs/ROADMAP.md) · [Deployment roadmap](docs/DEPLOYMENT_ROADMAP.md) · [Architecture](docs/ARCHITECTURE.md) · [Launch plan](docs/HERMES_LEARNS_MANIM.md) · [Agent guide](AGENTS.md)
-
-<br />
-
-<img src="docs/showcase/assets/continuous-geometric-picture.gif" alt="GRPO semantic manifold: sibling completions become a geometric policy update across the full scene" width="760" />
+[动画画廊](docs/showcase/README.md) · [架构文档](docs/ARCHITECTURE.md) · [路线图](docs/ROADMAP.md) · [用户手册](docs/USER_MANUAL.md)
 
 <br />
 
 <p align="center">
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/rhombicosidodecahedron.gif" alt="Rhombicosidodecahedron animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/cosmic-gravity-3d.gif" alt="Cosmic gravity 3D animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/continuous-geometric-picture.gif" alt="Full GRPO semantic manifold animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/derivative-visualization.gif" alt="Derivative visualization animation" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/rhombicosidodecahedron.gif" alt="Rhombicosidodecahedron" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/cosmic-gravity-3d.gif" alt="Cosmic gravity 3D" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/continuous-geometric-picture.gif" alt="GRPO manifold" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/derivative-visualization.gif" alt="Derivative" width="24%" /></a>
 </p>
 
 <p align="center">
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/prolip-scene.gif" alt="ProLIP animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/lorenz-attractor.gif" alt="Lorenz attractor animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/hopf-fibration.gif" alt="Hopf fibration animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/fourier-epicycles.gif" alt="Fourier epicycles animation" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/prolip-scene.gif" alt="ProLIP" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/lorenz-attractor.gif" alt="Lorenz" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/hopf-fibration.gif" alt="Hopf fibration" width="24%" /></a>
+  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/fourier-epicycles.gif" alt="Fourier epicycles" width="24%" /></a>
 </p>
 
-<p align="center">
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/teaching-hopf.gif" alt="Teaching Hopf animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/brownian-finance.gif" alt="Brownian finance animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/radius-of-convergence.gif" alt="Radius of convergence animation" width="24%" /></a>
-  <a href="docs/showcase/README.md"><img src="docs/showcase/assets/whiskering-exchange.gif" alt="Whiskering exchange animation" width="24%" /></a>
-</p>
-
-**Math-To-Manim helps teachers, tutors, parents, and guardians turn questions into visual explanations they can inspect, adjust, and reuse.**
-
-[**Browse the local GIF gallery →**](docs/showcase/README.md)
-
-<br />
-
-<img src="docs/assets/hermes-learns-manim.jpg" alt="Hermes Learns Manim banner with mathematical formulas" width="760" />
-
-<br />
-
-## Hermes learns Manim
-
-This repo is also a live **Hermes Agent workspace**. Hermes is not imported by Math-To-Manim and is not a runtime dependency; it is the contributor/operator layer that uses the repo the way a developer would: read files, search code, patch docs and code, run terminal checks, inspect generated artifacts, review media with vision, delegate larger work, track todos, and preserve useful context through skills and memory.
-
-| Hermes-native capability | How it is used in Math-To-Manim |
-| --- | --- |
-| File + search tools | Read `README.md`, `AGENTS.md`, `pyproject.toml`, schemas, tests, docs, and generated run artifacts before making claims. |
-| Patch tool | Make surgical edits to docs, schemas, tests, pipeline code, and launch copy while preserving repo style and typed contracts. |
-| Terminal tool | Run `pytest`, CLI help, deterministic smoke generations, Codex checks, Manim, FFmpeg, link validators, git, and GitHub verification. |
-| Vision/media review | Inspect screenshots, contact sheets, frames, and GIFs so showcase media is judged visually, not trusted because filenames exist. |
-| Delegation + todos | Split larger work across focused agents, track acceptance criteria, and keep implementation/review/checklist state explicit. |
-| Session search + memory | Recover prior repo decisions and preserve stable conventions without storing secrets or temporary run noise. |
-| Skills | Load procedures such as `agents-md`, `codebase-inspection`, `manim-video`, `systematic-debugging`, `writing-plans`, `test-driven-development`, and `subagent-driven-development`. |
-
-The Math-To-Manim side gives Hermes concrete things to operate: the `math-to-manim` CLI, deterministic helpers in `math_to_manim/tools/`, typed stages in `math_to_manim/agents/` and `math_to_manim/pipeline/`, schemas in `math_to_manim/schemas/`, render/review helpers, and reproducible `runs/<run_id>/` bundles containing JSON contracts, `generated_scene.py`, validation/render/review reports, contact sheets, frames, and `manifest.json`.
-
-Start a repo-aware Hermes session:
-
-```bash
-# Install/configure Hermes if needed.
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
-hermes setup
-hermes doctor
-
-# From the repo root, preload skills for this repo.
-hermes --skills agents-md,manim-video,codebase-inspection,systematic-debugging
-```
-
-See [`AGENTS.md`](AGENTS.md) for the full operating contract and [`docs/HERMES_LEARNS_MANIM.md`](docs/HERMES_LEARNS_MANIM.md) for the launch/thread plan and new animation slate.
+**MathViz 帮助教师、家教和家长将数学问题转化为可审查、可编辑、可复用的视觉化教学动画。**
 
 </div>
 
 ---
 
-## Start here: Hermes + Math-To-Manim setup
+## 这是什么
 
-This repo is meant to be operated by **Hermes Agent** while Math-To-Manim provides the visual explanation pipeline. The split is intentional:
+MathViz 是一个**从问题到教学动画**的 AI 流水线。你输入一个数学问题，它不会直接跳到代码，而是先走完一整套教学设计流程：
 
-- **Hermes** is the repo operator: skills, file/search/patch tools, terminal checks, vision review, todos, delegation, memory, and GitHub verification.
-- **Math-To-Manim** is the Python package: typed curriculum/storyboard artifacts, Manim code generation, validation, render/review bundles, and showcase assets.
+```
+问题
+  → 意图分析：学生真正想问的是什么？
+  → 知识图谱：需要先理解哪些前置概念？
+  → 课程编排：按什么顺序讲才能让人「恍然大悟」？
+  → 数学包：关键定义、公式、例题
+  → 故事板：屏幕上应该发生什么？
+  → 场景规格：需要哪些 Manim 对象和动画步骤？
+  → 生成代码：生成可执行的 Manim Python 代码
+  → 静态验证：语法检查 + 安全沙箱
+  → Manim 渲染：输出 MP4 视频
+  → 视频审查 + 打包
+```
 
-Fastest path for a new checkout:
+每一步都输出**类型化的 JSON 产物**，可以随时停下来审查、修改中间阶段，然后重新渲染——视频不再是黑盒。
+
+设计原则：**故事先于符号，几何先于代数，产物先于副作用。**
+
+---
+
+## 快速开始
+
+### 1. 安装
 
 ```bash
-git clone https://github.com/HarleyCoops/Math-To-Manim.git
-cd Math-To-Manim
+git clone https://github.com/Gakiwoo/MathViz.git
+cd MathViz
 
-# 1. Install and verify the Python package.
+# 创建虚拟环境并安装
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
 python -m pip install -e ".[dev]"
-python -m pytest
-
-# 2. Install and verify Hermes.
-curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
-hermes setup
-hermes doctor
-hermes tools list --summary
-hermes skills list
-
-# 3. Register this repo's local Math-To-Manim skill.
-hermes config set skills.external_dirs "$(pwd)/hermes/skills"
-hermes skills list --source local
-
-# 4. Start Hermes with the repo skill plus the procedural skills that matter here.
-hermes --skills hermes-learns-manim,agents-md,codebase-inspection,manim-video,systematic-debugging
 ```
 
-Once Hermes is inside this repo, the expected workflow is concrete: read `AGENTS.md`, inspect `pyproject.toml` and CLI help, run deterministic smoke generations, open the `runs/<run_id>/` artifact bundle, visually inspect frames/GIFs when media changes, then commit/push only verified docs/code/assets.
+### 2. 启动教师控制台（推荐）
 
-See [How Hermes uses this repo](#hermes-learns-manim) for the detailed tool map.
-
-### Where is the old Claude skill?
-
-The old Claude Code instructions that referenced `./skill` are historical. This rewrite does not keep a root `skill/` directory, and `claude --plugin-dir ./skill ...` is not the recommended path for the current repo.
-
-Repo-local Hermes skills live under [`hermes/skills/`](hermes/skills/). Register that parent directory with Hermes as shown above so individual skills (for example [`hermes-learns-manim/SKILL.md`](hermes/skills/hermes-learns-manim/SKILL.md)) are discoverable by name, then run Hermes with `--skills hermes-learns-manim,...`. The `hermes-learns-manim` skill is contributor/operator guidance around the M2M2 CLI, Codex-backed codegen option, deterministic smoke runs, and artifact review; it is not imported by the `math_to_manim` Python package.
-
----
-
-## What this is
-
-**Math to Manim** is for the moment when a learner asks, “Can you show me why?” A teacher, tutor, parent, or guardian can type a question and get back a visual explanation plan: the concept, the missing prerequisites, the order of ideas, the screen beats, the generated Manim code, and optionally the rendered video.
-
-The input can be short, but the product is the explanation: what the learner needs to understand, what should appear first, where the aha moment lives, and which visual metaphor makes the idea feel inevitable.
-
-Math-To-Manim proves that calculus, topology, chaos, spacetime, stochastic finance, and ML concepts can become useful mathematical motion when agents plan the explanation before they write code.
-
-This repo turns that idea into a durable teaching pipeline:
-
-- a prerequisite-story pipeline inspired by the original reverse knowledge tree;
-- typed Pydantic artifacts between every stage;
-- OpenAI Agents SDK-compatible adapters for planning and generation;
-- optional Codex CLI-backed codegen for subscription-authenticated iteration;
-- a reproducible `runs/<run_id>/` bundle for every generation;
-- static validation, render metadata, review artifacts, and manifests that are easy to inspect in CI, by Hermes, or by another agent.
-
-The design principle is simple: **story before symbols, geometry before algebra, artifacts before side effects.**
-
----
-
-## What makes this different
-
-A normal text-to-code demo jumps from a request straight to Python. Math to Manim takes the long way on purpose:
-
-```text
-question
-  → intent: what is the learner really asking?
-  → prerequisite graph: what must be understood first?
-  → curriculum: what order makes the idea click?
-  → math packet: which definitions/equations matter?
-  → storyboard: what should move on screen?
-  → scene spec: what Manim objects and beats are needed?
-  → generated_scene.py
-  → static validation / repair
-  → Manim render
-  → review artifacts / showcase GIF
-```
-
-That gives every run a memory: JSON contracts, generated code, render results, review notes, and a manifest. The output is not just a video; it is an inspectable path from **question** to **understanding** to **animation**.
-
-For current editable-video status and the planned prompt/spec/code edit loop, see the [roadmap](docs/ROADMAP.md).
-
----
-
-## Clone and run
-
-### 1. Clone
-
-Windows PowerShell:
-
-```powershell
-git clone https://github.com/HarleyCoops/Math-To-Manim.git
-cd Math-To-Manim
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
-python -m pytest
-```
-
-macOS / Linux / WSL:
+浏览器界面，支持 DeepSeek / Qwen / Kimi / GLM / 豆包等国内模型：
 
 ```bash
-git clone https://github.com/HarleyCoops/Math-To-Manim.git
-cd Math-To-Manim
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
-python -m pytest
-```
-
-### 2. Start the local teacher console
-
-For teachers, the easiest path is the browser console. It creates or reuses
-`.venv`, installs the web dependencies, starts the local FastAPI app, and opens
-your browser at `http://127.0.0.1:7860`.
-
-macOS Finder:
-
-```text
-Double-click scripts/start-teacher-console.command
-```
-
-macOS / Linux / WSL terminal:
-
-```bash
+# macOS / Linux
 ./scripts/start-teacher-console.sh
-```
 
-Windows:
-
-```bat
+# Windows
 scripts\start-teacher-console.bat
 ```
 
-Windows PowerShell:
+浏览器自动打开 `http://127.0.0.1:7860`。在里面选择模型、输入 API Key，即可一键生成教学方案 + Manim 代码。
 
-```powershell
-.\scripts\start-teacher-console.ps1
-```
-
-Inside the browser, choose a Chinese OpenAI-compatible provider preset such as
-DeepSeek, Qwen, Kimi, GLM, or Doubao, enter your API key, generate the teaching
-plan and Manim code first, then render a low-quality preview when local render
-dependencies are available. Local provider settings are stored in `.env.m2m2`,
-which is ignored by git.
-
-The console health check now clearly distinguishes **required** tools (Manim,
-FFmpeg) from **optional** tools (LaTeX/MiKTeX). When LaTeX is not installed, the
-UI shows "可选·未安装 — 公式自动用纯文本渲染" instead of a confusing generic
-warning. Rendered scenes that use `MathTex`/`Tex` are automatically downgraded to
-plain `Text` so previews work even without a LaTeX installation.
-
-### 3. Run a no-API smoke test
-
-This proves the CLI, artifact contracts, and validators are wired before you spend model or render time:
+### 3. 命令行快速冒烟（无需 API Key）
 
 ```bash
-math-to-manim generate "Explain why derivatives are slopes" --deterministic --no-render
+math-to-manim generate "解释导数为什么是斜率" --deterministic --no-render
 ```
 
-Equivalent module form:
-
-```bash
-python -m math_to_manim.cli generate "Explain why derivatives are slopes" --deterministic --no-render
-```
-
-### 4. Generate with model calls
-
-Set an OpenAI key and choose a model if desired:
+### 4. 使用 AI 模型生成
 
 ```bash
 export OPENAI_API_KEY="sk-..."
-export OPENAI_MODEL="gpt-4.1"
-math-to-manim generate "Explain Fourier epicycles as rotating vectors" --no-render
+math-to-manim generate "用旋转向量解释傅里叶级数" --no-render
 ```
 
-PowerShell:
-
-```powershell
-$env:OPENAI_API_KEY = "sk-..."
-$env:OPENAI_MODEL = "gpt-4.1"
-math-to-manim generate "Explain Fourier epicycles as rotating vectors" --no-render
-```
-
-### 5. Install render extras when you want MP4 output
-
-Python render dependency:
+### 5. 安装渲染依赖（生成 MP4 视频）
 
 ```bash
-python -m pip install -e ".[dev,render]"
-```
-
-System render dependencies are also needed for real Manim output. Manim needs
-native graphics libraries such as Cairo/Pango and FFmpeg for media. LaTeX is
-optional: when LaTeX/MiKTeX is not available, the pipeline automatically
-rewrites `MathTex`/`Tex` calls to plain `Text` and `BulletedList` to `VGroup`,
-so low-quality previews work without LaTeX. Full-quality renders with
-mathematical formulas still require LaTeX.
-
-macOS:
-
-```bash
+# macOS
+pip install -e ".[dev,render]"
 ./scripts/bootstrap-render-macos.sh
+
+# Linux (Debian/Ubuntu)
+pip install -e ".[dev,render]"
+sudo xargs -a requirements-system.txt apt-get install -y
 ```
 
-If Homebrew is not installed, the macOS script will stop with the exact `brew`
-commands needed before attempting the Python Manim install.
+---
 
-For `MathTex`/`Tex` output on macOS, install BasicTeX or MacTeX separately.
-BasicTeX uses the macOS installer and may ask for an administrator password.
+## 一次生成会产出什么
 
-Debian/Ubuntu/WSL:
+每次运行在 `runs/<时间戳>-<标题>/` 目录下留下完整记录：
 
-```bash
-./scripts/bootstrap-render.sh
+```text
+runs/20260527T120000Z-derivatives-as-slopes/
+├── request.json              # 原始请求
+├── intent.json               # 意图分析
+├── knowledge_graph.json      # 知识图谱
+├── curriculum.json           # 课程编排
+├── math_packet.json          # 数学定义与公式
+├── storyboard.json           # 视觉故事板
+├── scene_spec.json           # 场景规格（可手动编辑）
+├── generated_code.json       # 生成的代码
+├── generated_scene.py        # 可执行的 Manim 脚本
+├── validation_report.json    # 静态验证报告
+├── render_result.json        # 渲染结果
+├── review_report.json        # 视频审查
+├── animation_package.json    # 完整打包
+└── manifest.json             # 清单
 ```
 
-Windows PowerShell:
+---
 
-```powershell
-.\scripts\bootstrap-render-windows.ps1
+## 代码仓库结构
+
+```
+math_to_manim/
+├── agents/       # 流水线阶段适配器（意图、图谱、课程、数学、故事板、场景规格、代码生成、审查、渲染、打包）
+├── schemas/      # Pydantic 产物契约（所有阶段的类型定义）
+├── pipeline/     # 流水线编排、状态管理、追踪、修复循环
+├── tools/        # 确定性工具（AST 验证、图谱操作、场景发现、Manim 修复）
+├── rendering/    # Manim 和 FFmpeg 命令行封装
+├── providers/    # 代码生成提供者（OpenAI Agents SDK + Codex CLI）
+├── review/       # 静态审查和视频评分
+└── app/          # 教师控制台（FastAPI + 原生 JS 前端）
 ```
 
-The package list lives in [`requirements-system.txt`](requirements-system.txt).
+---
 
-### Windows notes
+## 技术栈
 
-If the repository is synced between macOS and Windows via iCloud, BaiduSync, or
-similar, stale macOS shell scripts in `.venv/bin/` (such as `manim`, `dvisvgm`)
-can cause `[WinError 193] %1 is not a valid Win32 application` when the pipeline
-tries to render. The Windows binary resolver now skips non-Windows executables
-and falls through to `.venv/Scripts/manim.exe`, but the safest fix is to delete
-the stale files:
+| 组件 | 技术 | 说明 |
+|------|------|------|
+| 语言 | Python 3.10+ | 类型标注全覆盖 |
+| 数据模型 | Pydantic | v1/v2 双兼容 |
+| AI 生成 | OpenAI Agents SDK | 结构化输出 + 多模型支持 |
+| 动画引擎 | Manim CE 0.20+ | 社区版数学动画 |
+| 视频处理 | FFmpeg | 格式转换 + GIF 导出 |
+| 公式渲染 | LaTeX (可选) | 缺省时自动降级为纯文本 |
+| Web 前端 | FastAPI + Uvicorn | 教师控制台 |
+| 代码质量 | ruff + pytest | lint + 84 测试 |
+
+---
+
+## 支持的 AI 模型
+
+教师控制台内置以下国内模型预设：
+
+- **DeepSeek** (V3 / R1)
+- **Qwen** (通义千问)
+- **Kimi** (月之暗面)
+- **GLM** (智谱)
+- **豆包** (字节跳动)
+
+以上均为 OpenAI 兼容接口，直接填入 API Key 即可使用。也可以通过 `OPENAI_API_KEY` 和 `OPENAI_MODEL` 环境变量使用任何兼容接口。
+
+---
+
+## Windows 注意事项
+
+如果仓库通过 iCloud、百度网盘等在 macOS 和 Windows 间同步，`.venv/bin/` 下的 macOS shell 脚本可能导致 Windows 上运行 `manim` 时报 `[WinError 193]`。解决方法：
 
 ```powershell
 Remove-Item .venv/bin/manim, .venv/bin/manimce, .venv/bin/dvisvgm -ErrorAction SilentlyContinue
 Remove-Item .venv/bin/math-to-manim, .venv/bin/m2m2 -ErrorAction SilentlyContinue
 ```
 
-After cleanup, run `python -B -m pytest tests/` to verify.
-
-All generated code also passes through automatic fix-ups before rendering:
-
-| Pattern | Auto-fix |
-| --- | --- |
-| `Checkmark(...)` | → `Text("✓", ...)` |
-| `RightAngle(vertex1, vertex2, vertex3)` | → `RightAngle(Line(v1,v2), Line(v2,v3))` |
-| `TransformMatchingTex(a, b)` | → `ReplacementTransform(a, b)` |
-| `MathTex`/`Tex`/`SingleStringMathTex` (when LaTeX missing) | → `Text(...)` |
-
 ---
 
-## Codex CLI codegen path
+## 许可证
 
-Math-To-Manim can keep the typed planning pipeline while sending the Manim codegen and repair loop through a locally authenticated Codex CLI session.
-
-Check Codex first:
-
-```bash
-codex --version
-codex exec "Say ready from inside this repo"
-```
-
-Then route codegen through Codex:
-
-```bash
-math-to-manim generate "Explain derivatives as slopes with a cinematic tangent-line reveal" \
-  --codegen-provider codex-cli \
-  --codex-full-auto \
-  --style cinematic \
-  --quality l
-```
-
-Earlier planning stages remain on the typed adapters; only the generated-code and repair stages move first. That makes the migration incremental instead of all-or-nothing.
-
----
-
-## What lands on disk
-
-A generation writes a self-contained run bundle:
-
-```text
-runs/<run_id>/
-  request.json
-  intent.json
-  knowledge_graph.json
-  curriculum.json
-  math_packet.json
-  storyboard.json
-  scene_spec.json
-  generated_code.json
-  generated_scene.py
-  validation_report.json
-  render_result.json
-  review_report.json
-  draft_review/
-    draft_review.md
-    contact_sheet.png
-    frames/
-  animation_package.json
-  manifest.json
-```
-
-Package layout:
-
-```text
-math_to_manim/
-  agents/      # stage adapters
-  schemas/     # versioned artifact contracts
-  tools/       # graph, validation, rendering, video, artifact helpers
-  pipeline/    # orchestration, tracing, repair loop
-  rendering/   # Manim and FFmpeg wrappers
-  review/      # static and visual review scoring
-```
-
----
-
-## Motion showcase
-
-Sixteen curated GIFs are tracked under [`docs/showcase/assets/`](docs/showcase/assets/) as the **art direction target** for Math-To-Manim's visual explanations.
-
-<table>
-<tr>
-<td width="33%"><a href="docs/showcase/README.md"><img src="docs/showcase/assets/rhombicosidodecahedron.gif" alt="Rhombicosidodecahedron" /></a></td>
-<td width="33%"><a href="docs/showcase/README.md"><img src="docs/showcase/assets/hopf-fibration.gif" alt="Hopf fibration" /></a></td>
-<td width="33%"><a href="docs/showcase/README.md"><img src="docs/showcase/assets/lorenz-attractor.gif" alt="Lorenz attractor" /></a></td>
-</tr>
-<tr>
-<td><b>Geometry as spectacle</b></td>
-<td><b>Topology as choreography</b></td>
-<td><b>Chaos as intuition</b></td>
-</tr>
-</table>
-
-See the full gallery with descriptions: **[`docs/showcase/README.md`](docs/showcase/README.md)**.
-
-### Make a README-sized GIF from a render
-
-```bash
-MP4="media/videos/your_scene/480p15/YourScene.mp4"
-
-ffmpeg -y -ss 95 -t 24 -i "$MP4" \
-  -vf "fps=12,scale=720:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5" \
-  docs/showcase/assets/your-clip.gif
-```
-
-Adjust `-ss` and `-t` to capture the teaching beat you want.
-
----
-
-## License
-
-MIT.
+MIT

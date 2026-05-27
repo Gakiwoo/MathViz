@@ -13,7 +13,7 @@ from math_to_manim.schemas import AnimationPackage
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="math-to-manim")
+    parser = argparse.ArgumentParser(prog="mathviz")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     generate = subparsers.add_parser("generate", help="Generate a typed animation run")
