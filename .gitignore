@@ -1,0 +1,59 @@
+# Python virtual environment
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.eggs/
+dist/
+build-portable/
+
+# Generated runs and media
+runs/
+media/
+output/
+artifacts/
+*.mp4
+*.log
+
+# IDE and OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary files
+.tmp-runs/
+*.tmp
+*.swp
+*.swo
+*~
+
+# Workbuddy
+.workbuddy/
+
+# AI tool configs
+.claude/
+.codebuddy/
+.superpowers/
+.playwright-cli/
+
+# Build artifacts
+build/
+*.egg-info/
+.coverage
+
+# Project-specific
+deliverables/

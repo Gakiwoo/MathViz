@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>M2教学动画控制台</title>
+    <link rel="stylesheet" href="/static/styles.css?v=20260519-4">
+    <script defer src="/static/app.js?v=20260519-4"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand">
+          <div class="brand-mark">M2</div>
+          <div>
+            <h1>M2教学动画</h1>
+            <p>本地运行</p>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-item active" data-panel="generate" type="button">生成动画</button>
+          <button class="nav-item" data-panel="history" type="button">历史运行</button>
+          <a class="nav-item" href="/static/USER_MANUAL.md" target="_blank" style="text-decoration:none; font-size:13px; margin-top:8px; opacity:0.6;">使用手册 ↗</a>
+        </nav>
+
+        <section class="model-status" aria-live="polite">
+          <span class="eyebrow">当前模型</span>
+          <strong id="current-provider">未配置</strong>
+          <span id="current-model">-</span>
+          <span id="key-status" class="status-pill muted">API Key 未配置</span>
+        </section>
+
+        <button class="settings-button" id="settings-button" type="button" title="设置">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </aside>
+
+      <main class="workspace">
+        <section class="panel active" id="panel-generate">
+          <form class="prompt-panel" id="generate-form">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">生成</span>
+                <h2>今天要讲什么？</h2>
+              </div>
+              <span class="mode-chip">先生成方案与代码</span>
+            </div>
+
+            <label class="field field-wide">
+              <span>教学主题</span>
+              <textarea id="prompt" name="prompt" rows="5">画一个勾股定理 a² + b² = c²图示，适合初中生理解。</textarea>
+            </label>
+
+            <div class="field-grid">
+              <label class="field">
+                <span>学生阶段</span>
+                <select id="audience-level" name="audience_level">
+                  <option value="middle_school" selected>初中</option>
+                  <option value="high_school">高中</option>
+                  <option value="undergraduate">大学本科</option>
+                  <option value="advanced">进阶学习者</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>时长</span>
+                <select id="desired-duration" name="desired_duration">
+                  <option value="30" selected>30 秒</option>
+                  <option value="60">60 秒</option>
+                  <option value="90">90 秒</option>
+                  <option value="120">120 秒</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>风格</span>
+                <select id="style" name="style">
+                  <option value="clean classroom" selected>清爽课堂</option>
+                  <option value="cinematic">电影感</option>
+                  <option value="blackboard">黑板推导</option>
+                  <option value="minimal geometric">极简几何</option>
+                </select>
+              </label>
+            </div>
+
+            <label class="mode-toggle">
+              <input id="use-ai" name="use_ai" type="checkbox" checked>
+              <span>
+                <strong>AI 深度生成</strong>
+                <small>关闭时使用本地快速草稿；开启后会调用当前模型，等待时间更长。</small>
+              </span>
+            </label>
+
+            <div class="actions">
+              <button class="primary-action" id="generate-button" type="submit">生成动画方案</button>
+              <button class="secondary-action" id="example-button" type="button">载入示例</button>
+            </div>
+          </form>
+
+          <section class="stage-grid" aria-label="生成阶段">
+            <article class="stage-card clickable" data-stage="intent" data-tab="teaching_plan" title="点击查看教学方案">
+              <span>1 Intent</span>
+              <strong id="stage-intent">待生成</strong>
+            </article>
+            <article class="stage-card clickable" data-stage="storyboard" data-tab="storyboard" title="点击查看分镜">
+              <span>2 Storyboard</span>
+              <strong id="stage-storyboard">待生成</strong>
+            </article>
+            <article class="stage-card clickable" data-stage="codegen" data-tab="manim_code" title="点击查看 Manim 代码">
+              <span>3 Manim Code</span>
+              <strong id="stage-code">待生成</strong>
+            </article>
+            <article class="stage-card clickable" data-stage="render" title="点击渲染低清预览">
+              <span>4 Render</span>
+              <strong id="stage-render">待渲染</strong>
+            </article>
+          </section>
+
+          <section class="artifact-panel">
+            <div class="tab-list" role="tablist" aria-label="运行产物">
+              <button class="tab active" data-tab="teaching_plan" type="button">教学方案</button>
+              <button class="tab" data-tab="knowledge_graph" type="button">知识图谱</button>
+              <button class="tab" data-tab="storyboard" type="button">分镜</button>
+              <button class="tab" data-tab="manim_code" type="button">Manim 代码</button>
+              <button class="tab" data-tab="run_bundle" type="button">运行包</button>
+            </div>
+            <pre id="artifact-content">等待生成。</pre>
+          </section>
+        </section>
+
+        <section class="panel" id="panel-history">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">历史运行</span>
+              <h2>Run Bundles</h2>
+            </div>
+            <button class="secondary-action compact" id="refresh-runs-button" type="button">刷新</button>
+          </div>
+          <div class="run-list" id="run-list"></div>
+        </section>
+
+      </main>
+
+      <aside class="result-panel">
+        <div class="panel-heading small">
+          <div>
+            <span class="eyebrow">结果</span>
+            <h2>视频预览</h2>
+          </div>
+          <span id="render-state" class="status-pill muted">等待渲染</span>
+        </div>
+
+        <div class="video-frame" id="video-frame">
+          <span>等待渲染</span>
+        </div>
+
+        <section class="run-meta">
+          <span class="eyebrow">运行目录</span>
+          <code id="run-dir">-</code>
+        </section>
+
+        <section class="health-summary" id="health-summary"></section>
+
+        <div class="result-actions">
+          <button class="dark-action" id="render-button" type="button" disabled>渲染低清预览</button>
+          <button class="secondary-action" id="copy-run-dir-button" type="button" disabled>复制运行目录</button>
+        </div>
+
+        <div class="notice" id="notice" role="status" aria-live="polite"></div>
+      </aside>
+    </div>
+
+    <div class="settings-overlay" id="settings-overlay">
+      <div class="settings-modal">
+        <div class="settings-modal-header">
+          <h2>设置</h2>
+          <button class="settings-close" id="settings-close" type="button" title="关闭">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-settings-tab="config" type="button">模型配置</button>
+          <button class="settings-tab" data-settings-tab="health" type="button">依赖检查</button>
+        </div>
+        <div class="settings-body">
+          <section class="settings-section active" id="settings-config">
+            <form class="settings-panel" id="config-form">
+              <div class="panel-heading">
+                <div>
+                  <span class="eyebrow">模型配置</span>
+                  <h2>OpenAI-compatible 厂商</h2>
+                </div>
+                <span id="config-status" class="status-pill muted">未保存</span>
+              </div>
+
+              <div class="field-grid two">
+                <label class="field">
+                  <span>厂商</span>
+                  <select id="provider-id" name="provider_id"></select>
+                </label>
+                <label class="field">
+                  <span>模型</span>
+                  <input id="model" name="model" autocomplete="off">
+                </label>
+              </div>
+
+              <label class="field field-wide">
+                <span>Base URL</span>
+                <input id="base-url" name="base_url" autocomplete="off">
+              </label>
+
+              <label class="field field-wide">
+                <span>API Key</span>
+                <input id="api-key" name="api_key" type="password" autocomplete="off" placeholder="已保存的密钥不会回显">
+              </label>
+
+              <div class="actions">
+                <button class="primary-action" type="submit">保存配置</button>
+                <button class="secondary-action" id="test-config-button" type="button">测试连接</button>
+              </div>
+            </form>
+          </section>
+          <section class="settings-section" id="settings-health">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">依赖检查</span>
+                <h2>Render Health</h2>
+              </div>
+              <button class="secondary-action compact" id="refresh-health-button" type="button">刷新</button>
+            </div>
+            <div class="health-grid" id="health-grid"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
