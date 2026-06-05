@@ -10,12 +10,14 @@ import pytest
 from math_to_manim.agents.base import (
     AgentInvocation,
     StageAgent,
+)
+from math_to_manim.config import RuntimeConfig
+from math_to_manim.providers.llm_helpers import (
     _is_third_party_provider,
     _repair_truncated_json,
     _strip_nulls,
     _summarize_schema_props,
 )
-from math_to_manim.config import RuntimeConfig
 
 
 class TestAgentInvocation:

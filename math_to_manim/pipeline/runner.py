@@ -289,3 +289,48 @@ def _safe_scene_name(prompt: str) -> str:
 
 def save_json(path: Path, payload: Any) -> None:
     path.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str) + "\n", encoding="utf-8")
+
+    @staticmethod
+    def render_existing(run_dir: Path, config: RuntimeConfig | None = None) -> None:
+        """Re-render an existing run from its generated_code.json artifact.
+
+        Used by the teacher console to pick up from a completed generation
+        without re-running the full planning pipeline.
+        """
+        from math_to_manim.agents.codegen import write_generated_code
+        from math_to_manim.agents.render import RenderAgent
+        from math_to_manim.agents.static_review import StaticReviewAgent
+        from math_to_manim.agents.video_review import VideoReviewAgent
+        from math_to_manim.schemas import GeneratedCode, RenderResult
+        from math_to_manim.tools.manim_fixes import fix_manim_common_issues, preview_safe_generated_code
+
+        cfg = config or RuntimeConfig.from_env()  # type: ignore[assignment]
+        generated = GeneratedCode.model_validate(save_json.__self__ if False else json.loads(
+            (run_dir / "generated_code.json").read_text(encoding="utf-8")
+        ))
+
+        generated = fix_manim_common_issues(generated)
+        generated = preview_safe_generated_code(generated)
+        save_json(run_dir / "generated_code.json", generated.to_public_dict())
+        code_path = write_generated_code(generated, run_dir)
+
+        validation = StaticReviewAgent(cfg).run((generated, code_path))
+        save_json(run_dir / "validation_report.json", validation.to_public_dict())
+
+        if validation.is_successful:
+            render_result = RenderAgent(cfg).run((generated, code_path, cfg.default_quality))
+        else:
+            render_result = RenderResult(
+                status="skipped",
+                scene_name=generated.scene_name,
+                output_path=None,
+                command=[],
+                stdout="",
+                stderr="static validation did not pass",
+                validation_report=validation,
+                metadata={"skipped": True, "reason": "static_validation_failed"},
+            )
+        save_json(run_dir / "render_result.json", render_result.to_public_dict())
+
+        review = VideoReviewAgent(cfg).run(render_result)
+        save_json(run_dir / "review_report.json", review.to_public_dict())

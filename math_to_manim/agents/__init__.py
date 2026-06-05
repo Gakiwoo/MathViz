@@ -9,7 +9,6 @@ from math_to_manim.agents.math_enrichment import MathAgent
 from math_to_manim.agents.prerequisite_graph import PrerequisiteGraphAgent
 from math_to_manim.agents.publisher import PublisherAgent
 from math_to_manim.agents.render import RenderAgent
-from math_to_manim.agents.repair import RepairAgent
 from math_to_manim.agents.scene_spec import SceneSpecAgent
 from math_to_manim.agents.static_review import StaticReviewAgent
 from math_to_manim.agents.storyboard import StoryboardAgent
@@ -26,6 +25,5 @@ __all__ = [
     "StaticReviewAgent",
     "RenderAgent",
     "VideoReviewAgent",
-    "RepairAgent",
     "PublisherAgent",
 ]

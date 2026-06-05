@@ -39,10 +39,28 @@ class SceneSpecAgent(StageAgent[VisualStoryboard, ManimSceneSpec]):
         class_name = "".join(part for part in storyboard.title.title() if part.isalnum()) or "GeneratedScene"
         if not class_name.endswith("Scene"):
             class_name += "Scene"
+
+        # Derive topic-aware objects and animations from the first scene's metadata
+        first_scene = storyboard.scenes[0] if storyboard.scenes else None
+        scene_objects = first_scene.metadata.get("objects", []) if first_scene else []
+        equation_overlays = first_scene.metadata.get("equation_overlays", []) if first_scene else []
+
+        objects: list[ManimObjectSpec] = [ManimObjectSpec(id="title", type="Text", properties={"font_size": 44})]
+        if "axes" in str(scene_objects).lower() or "坐标" in str(scene_objects):
+            objects.append(ManimObjectSpec(id="axes", type="Axes", properties={"x_range": [-4, 4], "y_range": [-3, 5]}))
+        if "curve" in str(scene_objects).lower() or "图形" in str(scene_objects):
+            objects.append(ManimObjectSpec(id="graph", type="ParametricFunction", properties={"color": "BLUE_B"}))
+        for idx, _ in enumerate(equation_overlays):
+            objects.append(
+                ManimObjectSpec(id=f"formula_{idx}", type="Text", properties={"font_size": 30, "color": "BLUE_A"})
+            )
+        objects.append(ManimObjectSpec(id="takeaway", type="Text", properties={"font_size": 28, "color": "YELLOW"}))
+
         timeline = []
         current = 0.0
+        animations: list[ManimAnimationSpec] = []
         for scene in storyboard.scenes:
-            duration = scene.duration_seconds or 0.0
+            duration = scene.duration_seconds or 8.0
             timeline.append(
                 {
                     "start": current,
@@ -51,21 +69,33 @@ class SceneSpecAgent(StageAgent[VisualStoryboard, ManimSceneSpec]):
                     "beats": scene.visual_actions,
                 }
             )
+            obj_targets = [obj.id for obj in objects if obj.id != "title"]
+            beat_objs = obj_targets[: len(scene.visual_actions)] if obj_targets else ["formula_0"]
+            for beat_idx, _ in enumerate(scene.visual_actions):
+                target = beat_objs[beat_idx % len(beat_objs)]
+                animations.append(
+                    ManimAnimationSpec(
+                        action="FadeIn" if beat_idx == 0 else "Write",
+                        target=target,
+                        start_time=current,
+                        duration_seconds=max(1.0, duration / len(scene.visual_actions)),
+                    )
+                )
             current += duration
+
+        # Ensure at least one animation if scenes are empty
+        if not animations:
+            animations = [
+                ManimAnimationSpec(action="FadeIn", target="title", start_time=0, duration_seconds=1),
+                ManimAnimationSpec(action="Write", target="takeaway", start_time=1, duration_seconds=2),
+            ]
+
         return ManimSceneSpec(
             scene_name=class_name,
             storyboard_scene_id=(storyboard.scenes[0].id if storyboard.scenes else None),
             imports=["from manim import *"],
-            objects=[
-                ManimObjectSpec(id="title", type="Text", properties={"font_size": 44}),
-                ManimObjectSpec(id="formula", type="Text", properties={"font_size": 30}),
-                ManimObjectSpec(id="takeaway", type="Text", properties={"font_size": 28}),
-            ],
-            animations=[
-                ManimAnimationSpec(action="FadeIn", target="title", start_time=0, duration_seconds=1),
-                ManimAnimationSpec(action="Write", target="formula", start_time=1, duration_seconds=2),
-                ManimAnimationSpec(action="Write", target="takeaway", start_time=3, duration_seconds=2),
-            ],
+            objects=objects,
+            animations=animations,
             camera={"plan": "static readable frame"},
             config={"background_color": "#0f172a", "quality_target": "low"},
             code_requirements=[

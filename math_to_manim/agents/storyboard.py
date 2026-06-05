@@ -31,28 +31,31 @@ class StoryboardAgent(StageAgent[MathPacket, VisualStoryboard]):
             if artifact is not None:
                 return mark_sdk_metadata(artifact, agent_name=self.name, model=self.config.model)
 
-        scenes = []
-        scene_titles = ["Foundation", "Visual Model", "Formal Connection", "Takeaway"]
+        topic = math_packet.metadata.get("curriculum_title") or "概念"
         equations = [equation.latex for equation in math_packet.key_equations]
+        scene_titles = _topic_scene_titles(topic)
+        per_scene_duration = max(8, (math_packet.metadata.get("requested_duration_seconds", 40) or 40) // len(scene_titles))
+
+        scenes = []
         for index, title in enumerate(scene_titles, start=1):
             scenes.append(
                 StoryboardScene(
                     id=f"scene-{index}",
                     title=title,
-                    narration="Build one step of the learner's intuition.",
+                    narration="逐步构建学习者的直观理解。",
                     visual_actions=[
-                        "introduce visual object",
-                        "highlight the changing quantity",
-                        "reveal the matching equation",
+                        "引入视觉元素",
+                        "高亮变化中的量",
+                        "展示对应公式",
                     ],
                     concept_ids=[math_packet.concept_id] if math_packet.concept_id else [],
-                    duration_seconds=10,
+                    duration_seconds=per_scene_duration,
                     camera="static readable frame",
                     metadata={
                         "visual_metaphor": _metaphor(
                             math_packet.definitions[-1] if math_packet.definitions else "concept"
                         ),
-                        "objects": ["title", "axes or diagram", "highlight labels", "equation overlay"],
+                        "objects": _topic_objects(topic),
                         "color_roles": {"primary": "BLUE", "accent": "YELLOW", "warning": "RED"},
                         "text_overlays": math_packet.definitions[:2],
                         "equation_overlays": equations,
@@ -62,13 +65,34 @@ class StoryboardAgent(StageAgent[MathPacket, VisualStoryboard]):
                 )
             )
         return VisualStoryboard(
-            title=(math_packet.metadata.get("curriculum_title") or "Math Animation"),
+            title=topic,
             scenes=scenes,
             target_duration_seconds=sum(scene.duration_seconds or 0 for scene in scenes),
             metadata={
                 "style_notes": "Cinematic but readable: dark background, generous spacing, equations below visuals."
             },
         )
+
+
+def _topic_scene_titles(topic: str) -> list[str]:
+    """Derive topic-specific scene titles from the curriculum title."""
+    prefix = topic.rstrip("的")
+    return [
+        f"{prefix}：基础概念",
+        f"{prefix}：直观模型",
+        f"{prefix}：公式推导",
+        f"{prefix}：核心结论",
+    ]
+
+
+def _topic_objects(topic: str) -> list[str]:
+    """Return topic-aware manim object descriptions for the storyboard metadata."""
+    return [
+        "标题与章节标题",
+        "坐标轴或几何图形",
+        "高亮关键点或区域",
+        "公式标注叠加层",
+    ]
 
 
 def _metaphor(concept: str) -> str:

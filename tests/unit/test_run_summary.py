@@ -62,7 +62,7 @@ def test_summarize_run_reads_artifacts_and_missing_render(tmp_path) -> None:
     write_json(
         run_dir / "render_result.json",
         {
-            "status": "failed",
+            "status": "skipped",
             "scene_name": "DemoScene",
             "output_path": None,
             "command": [],
@@ -79,7 +79,7 @@ def test_summarize_run_reads_artifacts_and_missing_render(tmp_path) -> None:
     assert summary["run_id"] == "20260518T000000Z-demo"
     assert summary["prompt"] == "Explain derivatives"
     assert summary["status"]["validation"] == "passed"
-    assert summary["status"]["render"] == "failed"
+    assert summary["status"]["render"] == "skipped"
     assert summary["video_url"] is None
     assert "See slope as change" in summary["sections"]["teaching_plan"]
     assert "DemoScene" in summary["sections"]["manim_code"]

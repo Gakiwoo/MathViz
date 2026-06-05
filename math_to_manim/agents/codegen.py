@@ -138,68 +138,6 @@ def _deterministic_scene_code(spec: ManimSceneSpec) -> str:
         return _triangle_comparison_scene_code(spec.scene_name)
     return _function_scene_code(spec.scene_name, "y = kx + b")
 
-    title = spec.scene_name.replace("Scene", "")
-    # Pick a relevant formula based on the scene name
-    scene_lower = spec.scene_name.lower()
-    formula_line = ""
-    if "勾股" in scene_lower or "pythagorean" in scene_lower:
-        formula_line = (
-            "        formula = Text('a\\u00b2 + b\\u00b2 = c\\u00b2', font_size=36, color=BLUE_A)\n"
-            "        formula.next_to(card, DOWN, buff=0.4)\n"
-        )
-    elif "导数" in scene_lower or "derivative" in scene_lower or "slope" in scene_lower:
-        formula_line = (
-            '        formula = Text("f\'(a) = lim_{h\\u21920} (f(a+h)-f(a))/h", font_size=30, color=BLUE_A)\n'
-            "        formula.next_to(card, DOWN, buff=0.4)\n"
-        )
-    elif "三角" in scene_lower or "sin" in scene_lower or "cos" in scene_lower:
-        formula_line = (
-            "        formula = Text('sin\\u00b2\\u03b8 + cos\\u00b2\\u03b8 = 1', font_size=36, color=BLUE_A)\n"
-            "        formula.next_to(card, DOWN, buff=0.4)\n"
-        )
-    elif "圆柱" in scene_lower or "体积" in scene_lower or "volume" in scene_lower:
-        formula_line = (
-            "        formula = Text('V = \\u03c0r\\u00b2h', font_size=36, color=BLUE_A)\n"
-            "        formula.next_to(card, DOWN, buff=0.4)\n"
-        )
-    elif "相似" in scene_lower or "函数" in scene_lower or "一次" in scene_lower:
-        formula_line = (
-            "        formula = Text('y = kx + b', font_size=36, color=BLUE_A)\n"
-            "        formula.next_to(card, DOWN, buff=0.4)\n"
-        )
-
-    lines = [
-        "from manim import *",
-        "",
-        "",
-        f"class {spec.scene_name}(Scene):",
-        "    def construct(self):",
-        "        self.camera.background_color = '#0f172a'",
-        f"        title = Text('{title}', font_size=44).to_edge(UP)",
-        "        info = Text('数学动画教学', font_size=24, color=GRAY_B).next_to(title, DOWN)",
-        "        card = RoundedRectangle(width=11, height=4.6, corner_radius=0.12, color=BLUE_B)",
-    ]
-    if formula_line:
-        lines.append(formula_line.rstrip("\n"))
-        lines.append(
-            "        hint = Text('使用 AI 深度生成可获取更优质的教学动画', font_size=22, color=GRAY).next_to(formula, DOWN, buff=0.3)"
-        )
-        lines.append("        group = VGroup(card, title, info, formula, hint).arrange(DOWN, buff=0.3).move_to(ORIGIN)")
-        lines.append("        self.play(FadeIn(card), FadeIn(title))")
-        lines.append("        self.play(Write(info))")
-        lines.append("        self.play(FadeIn(formula, shift=UP))")
-        lines.append("        self.play(FadeIn(hint))")
-    else:
-        lines.append(
-            "        hint = Text('使用 AI 深度生成可获取更优质的教学动画', font_size=22, color=GRAY).move_to(ORIGIN)"
-        )
-        lines.append("        group = VGroup(card, title, info, hint).arrange(DOWN, buff=0.4).move_to(ORIGIN)")
-        lines.append("        self.play(FadeIn(card), FadeIn(title))")
-        lines.append("        self.play(Write(info))")
-        lines.append("        self.play(FadeIn(hint))")
-    lines.append("        self.wait(1)")
-    return "\n".join(lines) + "\n"
-
 
 def _spec_signal(spec: ManimSceneSpec) -> str:
     parts = [

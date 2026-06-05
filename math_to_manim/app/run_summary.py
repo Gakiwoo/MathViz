@@ -7,13 +7,28 @@ import platform
 from pathlib import Path
 from typing import Any
 
-from math_to_manim.agents import RenderAgent, StaticReviewAgent, VideoReviewAgent
-from math_to_manim.agents.codegen import write_generated_code
+from math_to_manim.agents import (
+    CurriculumAgent,
+    IntentAgent,
+    ManimCodeAgent,
+    MathAgent,
+    PrerequisiteGraphAgent,
+    SceneSpecAgent,
+    StoryboardAgent,
+)
 from math_to_manim.config import RuntimeConfig
-from math_to_manim.pipeline.runner import save_json
+from math_to_manim.pipeline.runner import AnimationPipeline, save_json
 from math_to_manim.rendering.commands import resolve_binary
-from math_to_manim.schemas import GeneratedCode, RenderResult
-from math_to_manim.tools.manim_fixes import fix_manim_common_issues, preview_safe_generated_code
+from math_to_manim.schemas import (
+    ConceptIntent,
+    CurriculumPlan,
+    KnowledgeGraph,
+    ManimSceneSpec,
+    MathPacket,
+    RenderResult,
+    UserRequest,
+    VisualStoryboard,
+)
 
 
 def _latex_help_text() -> str:
@@ -96,8 +111,8 @@ def list_runs(runs_dir: Path, *, limit: int = 20) -> list[dict[str, Any]]:
 
 def _check_latex_compiles(latex_bin_name: str = "latex") -> dict[str, Any]:
     """Check optional LaTeX tools without triggering MiKTeX first-run installs."""
-    latex_bin = _resolve_binary(latex_bin_name)
-    dvisvgm_bin = _resolve_binary("dvisvgm")
+    latex_bin = resolve_binary(latex_bin_name)
+    dvisvgm_bin = resolve_binary("dvisvgm")
     if not latex_bin:
         return {"available": False, "error": "latex binary not found", "help": _latex_help_text()}
     if not dvisvgm_bin:
@@ -116,8 +131,8 @@ def check_render_health(
     latex_bin: str = "latex",
 ) -> dict[str, Any]:
     latex_ok = _check_latex_compiles(latex_bin)
-    latex_path = _resolve_binary(latex_bin)
-    dvisvgm_path = _resolve_binary("dvisvgm")
+    latex_path = resolve_binary(latex_bin)
+    dvisvgm_path = resolve_binary("dvisvgm")
     latex_available = latex_path is not None
     dvisvgm_available = dvisvgm_path is not None
     tools = {
@@ -162,69 +177,34 @@ def check_render_health(
 
 
 def render_existing_run(run_dir: Path, config: RuntimeConfig) -> dict[str, Any]:
+    """Re-render an existing run via the shared pipeline renderer."""
     try:
-        generated_payload = _read_json(run_dir / "generated_code.json")
-        generated = GeneratedCode.model_validate(generated_payload)
-        # Fix common Manim API issues before rendering (includes Tex→Text fallback)
-        generated = fix_manim_common_issues(generated)
-        generated = preview_safe_generated_code(generated)
-        save_json(run_dir / "generated_code.json", generated.to_public_dict())
-        code_path = write_generated_code(generated, run_dir)
-
-        validation = StaticReviewAgent(config).run((generated, code_path))
-        save_json(run_dir / "validation_report.json", validation.to_public_dict())
-
-        if validation.is_successful:
-            render_result = RenderAgent(config).run((generated, code_path, config.default_quality))
-        else:
-            render_result = RenderResult(
-                status="failed",
-                scene_name=generated.scene_name,
-                output_path=None,
-                command=[],
-                stdout="",
-                stderr="static validation did not pass",
-                validation_report=validation,
-                metadata={"skipped": True, "reason": "static_validation_failed"},
-            )
-        save_json(run_dir / "render_result.json", render_result.to_public_dict())
-
-        review = VideoReviewAgent(config).run(render_result)
-        save_json(run_dir / "review_report.json", review.to_public_dict())
+        AnimationPipeline.render_existing(run_dir, config)
         return summarize_run(run_dir)
     except Exception as exc:
         import traceback
-
         tb = traceback.format_exc()
-        print(f"[render_existing_run] CRASH: {exc}\n{tb}", flush=True)
-        # Write a minimal render_result so the run is not left in limbo
+        print(f"[render_existing_run] CRASH: {exc}\n" + tb, flush=True)
         save_json(
             run_dir / "render_result.json",
-            {
-                "status": "failed",
-                "scene_name": "",
-                "output_path": None,
-                "command": [],
-                "stdout": "",
-                "stderr": f"render_existing_run crashed: {exc}",
-                "metadata": {"crashed": True, "error": str(exc)[:500]},
-            },
+            RenderResult(
+                status="skipped",
+                scene_name="",
+                stderr=f"render_existing_run crashed: {exc}",
+                metadata={"crashed": True, "error": str(exc)[:500]},
+            ).to_public_dict(),
         )
         return {
             "run_id": run_dir.name,
             "run_dir": str(run_dir),
-            "status": {"validation": "unknown", "render": "failed", "review_score": None},
+            "status": {"validation": "unknown", "render": "skipped", "review_score": None},
             "video_url": None,
-            "error": {"stage": "render", "message": f"内部错误：{exc}", "details": tb[-1200:]},
+            "error": {"stage": "render", "message": str(exc), "details": tb[-1200:]},
             "sections": {
-                "teaching_plan": "",
-                "knowledge_graph": "",
-                "storyboard": "",
-                "manim_code": "",
-                "run_bundle": "",
+                "teaching_plan": "", "knowledge_graph": "", "storyboard": "",
+                "manim_code": "", "run_bundle": "",
             },
         }
-
 
 def _error_summary(
     validation: dict[str, Any], render: dict[str, Any], review: dict[str, Any] | None = None
@@ -259,9 +239,6 @@ def _read_json(path: Path) -> dict[str, Any]:
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
-
-def _resolve_binary(name: str) -> str | None:
-    return resolve_binary(name)
 
 
 def _tool_status(binary: str, help_text: str, *, required: bool = False) -> dict[str, Any]:
@@ -350,14 +327,14 @@ def _artifact_paths(run_dir: Path) -> dict[str, str]:
 
 # -- Restage support -----------------------------------------------------------
 
-_STAGE_AGENTS: dict[str, tuple[str, str]] = {
-    "intent": ("IntentAgent", "UserRequest"),
-    "knowledge_graph": ("PrerequisiteGraphAgent", "ConceptIntent"),
-    "curriculum": ("CurriculumAgent", "KnowledgeGraph"),
-    "math_packet": ("MathAgent", "CurriculumPlan"),
-    "storyboard": ("StoryboardAgent", "MathPacket"),
-    "scene_spec": ("SceneSpecAgent", "VisualStoryboard"),
-    "codegen": ("ManimCodeAgent", "ManimSceneSpec"),
+_STAGE_AGENTS = {
+    "intent": (IntentAgent, UserRequest),
+    "knowledge_graph": (PrerequisiteGraphAgent, ConceptIntent),
+    "curriculum": (CurriculumAgent, KnowledgeGraph),
+    "math_packet": (MathAgent, CurriculumPlan),
+    "storyboard": (StoryboardAgent, MathPacket),
+    "scene_spec": (SceneSpecAgent, VisualStoryboard),
+    "codegen": (ManimCodeAgent, ManimSceneSpec),
 }
 
 

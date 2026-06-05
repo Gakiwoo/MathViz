@@ -29,7 +29,7 @@ GraphRelationship = Literal[
 ]
 IssueSeverity = Literal["info", "warning", "error"]
 ValidationStatus = Literal["passed", "warning", "failed", "skipped"]
-RenderStatus = Literal["queued", "running", "succeeded", "failed"]
+RenderStatus = Literal["queued", "running", "succeeded", "failed", "skipped"]
 
 DEPENDENCY_RELATIONSHIPS: tuple[str, ...] = ("prerequisite", "depends_on")
 

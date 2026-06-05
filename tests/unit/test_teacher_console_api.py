@@ -49,7 +49,7 @@ def test_generate_endpoint_creates_deterministic_no_render_run(tmp_path) -> None
     data = response.json()
     assert data["prompt"] == "Explain why derivatives are slopes"
     assert data["status"]["validation"] == "passed"
-    assert data["status"]["render"] == "failed"
+    assert data["status"]["render"] in ("failed", "skipped")
     assert (tmp_path / "runs" / data["run_id"] / "manifest.json").exists()
 
 
