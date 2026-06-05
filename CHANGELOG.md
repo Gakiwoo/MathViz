@@ -1,0 +1,65 @@
+# Changelog
+
+## v0.2.0 (2026-06-05)
+
+### 🚀 新增功能
+
+- **教师控制台 API 增强**: 新增 `/api/runs/{run_id}/render`、`/api/runs/{run_id}/restage`、`/api/runs/{run_id}/video` 端点
+- **`render_existing` 静态方法**: `AnimationPipeline.render_existing()` 支持从已有运行产物重新渲染，避免重跑全流水线
+- **场景/故事板主题感知**: `SceneSpecAgent` 和 `StoryboardAgent` 根据课程主题自动生成场景标题、对象和动画规格
+- **`RenderStatus` 新增 `skipped`**: 支持区分"跳过渲染"和"渲染失败"
+- **4 个新测试模块**: `test_cli.py` (13 tests)、`test_manim_fixes.py` (12 tests)、`test_prerequisite_graph.py` (9 tests)、`test_video_review.py` (12 tests)
+
+### 🛠️ 重构与改进
+
+- **提取 Provider 工具函数**: 将 `base.py` 中的 `_is_third_party_provider`、`_ensure_tracing_disabled`、`_get_model_for_provider`、`_repair_truncated_json`、`_strip_nulls`、`_run_third_party_structured` 提取到独立的 `providers/llm_helpers.py`
+- **run_summary 逻辑去重**: `render_existing_run()` 改用 `AnimationPipeline.render_existing()`，消除内联重复代码
+- **删除死代码**: 移除 `codegen.py` 中 return 语句后的不可达代码块
+- **删除未使用的 `RepairAgent`**: 移除 `agents/repair.py`，清理 `__init__.py` 中的遗留引用
+
+### 🐛 问题修复
+
+- 修复 `test_start_scripts` 中 shell 脚本执行权限问题（`chmod +x`）
+- 修复测试环境中的 `RenderStatus` 断言（`failed` → `skipped`）
+
+### 🧪 测试
+
+- 测试总数：84 → **125** (+41)
+- `app/api.py` 覆盖率：0% → **75.7%**
+- 整体覆盖率：69.1% → **74.3%**
+- `cli.py` 覆盖率：0% → **88.9%**
+- `video_review.py` 覆盖率：20.5% → **93.6%**
+- Ruff lint：**0 errors**
+
+### 📚 文档
+
+- 项目品牌更名：**Math-To-Manim → MathViz**
+- README 重写（520行→约200行），中文化关键部分，新增教师控制台介绍
+- 新增 `docs/ARCHITECTURE.md`
+- 更新 `docs/README.md` 和 `docs/showcase/README.md`
+- 清理多余的中文文档目录
+
+### 🏗️ 工程基础
+
+- Git 仓库初始化（13 commits）
+- GitHub Actions CI 配置（Python 3.10/3.11/3.12 矩阵）
+- Ruff lint/format 集成并运行（201 个自动修复 + 7 个手动修复）
+- `.gitignore` 全面覆盖（.venv, runs, media, build 等）
+- `requirements.txt` 依赖锁文件
+
+---
+
+## v0.1.0 (2026-05-19)
+
+### 🎉 初始版本
+
+- Math-To-Manim (M2M2) 类型化 11 阶段流水线
+- Intent → KnowledgeGraph → Curriculum → Math → Storyboard → SceneSpec → CodeGen → StaticReview → Render → VideoReview → Publish
+- 确定性 (deterministic) 模式，无需 API Key 即可离线运行
+- AST 安全沙箱（禁止危险导入/调用）
+- Manim 兼容性自动修复（Checkmark → Text, RightAngle 参数修正, LaTeX 降级）
+- 修复循环机制（静态验证失败/渲染失败最多重试 3 次）
+- Provider-Agnostic 架构（OpenAI Agents SDK + Codex CLI 桥接）
+- 跨平台启动脚本（sh/bat/ps1）
+- 16 段精选 GIF 展示画廊
+- 84 个测试，69.1% 覆盖率

@@ -80,3 +80,135 @@ def test_favicon_endpoint_avoids_browser_console_404(tmp_path) -> None:
     response = client.get("/favicon.ico")
 
     assert response.status_code in {200, 204}
+
+
+def test_index_endpoint_returns_200(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.get("/")
+
+    assert response.status_code == 200
+
+
+def test_get_config_endpoint_returns_config(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.get("/api/config")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "current" in data
+
+
+def test_get_runs_returns_empty_when_no_runs(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.get("/api/runs")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["runs"] == []
+
+
+def test_get_nonexistent_run_returns_404(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.get("/api/runs/nonexistent-run-id")
+
+    assert response.status_code == 404
+    data = response.json()
+    assert "not found" in str(data["detail"]).lower()
+
+
+def test_render_nonexistent_run_returns_500(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.post("/api/runs/nonexistent-run-id/render")
+
+    # render_run catches 404 internally and wraps it as 500
+    assert response.status_code == 500
+
+
+def test_restage_without_stage_returns_400(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.post("/api/runs/nonexistent-run-id/restage", json={})
+
+    assert response.status_code == 400
+    data = response.json()
+    assert "detail" in data
+
+
+def test_video_nonexistent_run_returns_404(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.get("/api/runs/nonexistent-run-id/video")
+
+    assert response.status_code == 404
+
+
+def test_generate_with_empty_prompt_returns_400(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.post("/api/generate", json={"prompt": ""})
+
+    assert response.status_code == 400
+    data = response.json()
+    assert "Prompt is required" in str(data["detail"])
+
+
+def test_config_test_endpoint_returns_200(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.post("/api/config/test")
+
+    assert response.status_code == 200
+    assert response.json() is not None
+
+
+def test_legacy_generate_endpoint(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.post(
+        "/generate",
+        json={
+            "prompt": "Explain why derivatives are slopes",
+            "audience_level": "high_school",
+            "desired_duration": 45,
+            "style": "clean classroom",
+            "deterministic": True,
+            "render": False,
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert "curriculum_plan" in data
+    assert "render_result" in data
+
+
+def test_generate_without_api_key_uses_deterministic(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    response = client.post(
+        "/api/generate",
+        json={
+            "prompt": "What is a limit?",
+            "use_ai": True,
+        },
+    )
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"]["validation"] == "passed"
