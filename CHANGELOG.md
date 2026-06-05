@@ -8,27 +8,32 @@
 - **`render_existing` 静态方法**: `AnimationPipeline.render_existing()` 支持从已有运行产物重新渲染，避免重跑全流水线
 - **场景/故事板主题感知**: `SceneSpecAgent` 和 `StoryboardAgent` 根据课程主题自动生成场景标题、对象和动画规格
 - **`RenderStatus` 新增 `skipped`**: 支持区分"跳过渲染"和"渲染失败"
-- **4 个新测试模块**: `test_cli.py` (13 tests)、`test_manim_fixes.py` (12 tests)、`test_prerequisite_graph.py` (9 tests)、`test_video_review.py` (12 tests)
+- **4 个新测试模块 (第二批)**: `test_base_agent_extended.py` (18 tests)、`test_codex_cli_extended.py` (42 tests)、`test_pipeline_extended.py` (16 tests)、`test_schemas_base.py` (6 tests)
+- **pre-commit hooks 配置**: ruff lint/format + 通用检查 + pytest 自动运行
 
 ### 🛠️ 重构与改进
 
-- **提取 Provider 工具函数**: 将 `base.py` 中的 `_is_third_party_provider`、`_ensure_tracing_disabled`、`_get_model_for_provider`、`_repair_truncated_json`、`_strip_nulls`、`_run_third_party_structured` 提取到独立的 `providers/llm_helpers.py`
+- **提取 Provider 工具函数**: 将 `base.py` 中的辅助函数提取到独立的 `providers/llm_helpers.py`
 - **run_summary 逻辑去重**: `render_existing_run()` 改用 `AnimationPipeline.render_existing()`，消除内联重复代码
+- **修复 render_existing 缩进 bug**: 原代码中 `render_existing` 因缩进错误被嵌套在 `save_json` 函数体内，根本无法作为 `AnimationPipeline` 方法调用
 - **删除死代码**: 移除 `codegen.py` 中 return 语句后的不可达代码块
-- **删除未使用的 `RepairAgent`**: 移除 `agents/repair.py`，清理 `__init__.py` 中的遗留引用
+- **删除未使用的 `RepairAgent`**: 移除 `agents/repair.py`
 
 ### 🐛 问题修复
 
 - 修复 `test_start_scripts` 中 shell 脚本执行权限问题（`chmod +x`）
 - 修复测试环境中的 `RenderStatus` 断言（`failed` → `skipped`）
+- 修复 `render_existing` 缩进 bug — 方法被错误嵌套在 `save_json` 内部
 
 ### 🧪 测试
 
-- 测试总数：84 → **125** (+41)
-- `app/api.py` 覆盖率：0% → **75.7%**
-- 整体覆盖率：69.1% → **74.3%**
+- 测试总数：84 → **220** (+136)
+- 整体覆盖率：69.1% → **87.7%**
+- `providers/codex_cli.py` 覆盖率：66.2% → **100%** ✅
+- `pipeline/runner.py` 覆盖率：66.0% → **98.6%**
+- `agents/base.py` 覆盖率：55.1% → **88.5%**
 - `cli.py` 覆盖率：0% → **88.9%**
-- `video_review.py` 覆盖率：20.5% → **93.6%**
+- `app/api.py` 覆盖率：52.0% → **83.8%**
 - Ruff lint：**0 errors**
 
 ### 📚 文档
