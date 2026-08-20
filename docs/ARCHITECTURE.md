@@ -46,7 +46,7 @@ math_to_manim/
 
 ## Schema contracts
 
-All schemas inherit from `ArtifactModel` (Pydantic v1/v2 dual-compatible). Key invariants enforced at validation time:
+All schemas inherit from `ArtifactModel` (Pydantic v2). Key invariants enforced at validation time:
 
 - `KnowledgeGraph`: no duplicate nodes, no dangling edges, no self-loops, no cycles in dependency relationships
 - `ValidationReport`: status "passed" cannot contain error-severity issues

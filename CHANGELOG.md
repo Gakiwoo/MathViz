@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased
+
+### 🐛 问题修复
+
+- **修复 `restage_run` KeyError**: `locals()[类对象]` 查表导致教师控制台"单阶段重跑"对所有合法 stage 必然崩溃；改为直接从 `_STAGE_AGENTS` 解包类对象
+- **统一 `RenderStatus.skipped` 语义**: `--no-render` 与"静态验证未通过"场景下 `render_result.status` 由 `failed` 改为 `skipped`（附 `reason` 元数据），与 `render_existing` 及 CHANGELOG 声明的"跳过≠失败"语义一致；CLI 摘要不再对未请求渲染的 run 误报 `Render: failed`
+- **中文 prompt 运行目录回退**: `_create_run_dir` 在非 ASCII 提示词（如中文）产生空 slug 时，由恒定的 `animation` 改为内容 hash（`prompt-<sha1前8位>`），目录名保持唯一
+
+### 🛠️ 重构与改进
+
+- **锁定 Pydantic v2**: 移除 `schemas/base.py` 的 v1/v2 双兼容分支与 `schemas/artifacts.py` 重复验证器，依赖收紧为 `pydantic>=2,<3`，消除运行时弃用警告
+- **CI ruff 范围扩展至 `tests/`**: lint 与 format 检查覆盖测试代码，清理 17 个 lint 错误
+- **CI 步骤合并**: pytest 与 coverage 合并为单次 `coverage run -m pytest`，新增 `--fail-under=85` 覆盖率门槛防止回归
+- **移除未使用的 gradio 依赖**: `web` extra 不再包含 `gradio`（教师控制台为 FastAPI + 原生 JS），同步更新启动脚本回退文案
+- **README 测试数同步**: 技术栈表由过期的 "84 测试" 更新为 "244 测试"
+
+### 🧪 测试
+
+- 新增 `restage_run` 三态单元测试 + API 端到端测试（239 → 244）
+- `test_schemas_base.py` 重写为 v2-only，移除基于 mock `pydantic.VERSION` 的脆弱兼容测试
+- `test_render_skipped_when_validation_fails` 断言更新为 `status == "skipped"`，与文档字符串及实现语义一致
+
 ## v0.2.0 (2026-06-05)
 
 ### 🚀 新增功能

@@ -15,17 +15,17 @@ from __future__ import annotations
 
 import json
 import subprocess
-from unittest.mock import ANY, patch
+from unittest.mock import patch
 
 import pytest
 
 from math_to_manim.config import RuntimeConfig
 from math_to_manim.schemas import GeneratedCode, ManimSceneSpec
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 class FakeRunner:
     """Simulates subprocess.run for a given payload dict."""
@@ -69,6 +69,7 @@ VALID_PAYLOAD = {
 # ===================================================================
 # 1. repair_code() method  (lines 50-64)
 # ===================================================================
+
 
 class TestRepairCode:
     """Coverage for CodexCliProvider.repair_code()."""
@@ -151,6 +152,7 @@ class TestRepairCode:
 # 2. FileNotFoundError handling in _run_codex  (lines 80-81)
 # ===================================================================
 
+
 class TestRunCodexFileNotFound:
     """Coverage for the FileNotFoundError branch."""
 
@@ -200,6 +202,7 @@ class TestRunCodexFileNotFound:
 # 3. Non-zero returncode in _run_codex  (line 85)
 # ===================================================================
 
+
 class TestRunCodexNonZeroReturn:
     """Coverage for the completed.returncode != 0 branch."""
 
@@ -241,6 +244,7 @@ class TestRunCodexNonZeroReturn:
 # 4. ValidationError in _parse_generated_code  (lines 98-99)
 # ===================================================================
 
+
 class TestParseGeneratedCodeValidationError:
     """Coverage for the ValidationError branch in _parse_generated_code."""
 
@@ -258,12 +262,14 @@ class TestParseGeneratedCodeValidationError:
         """scene_name must be a string; sending a number triggers ValidationError."""
         from math_to_manim.providers.codex_cli import CodexCliProvider
 
-        payload = json.dumps({
-            "scene_name": 42,
-            "code": "from manim import *\nclass S(Scene): pass\n",
-            "dependencies": [],
-            "metadata": {},
-        })
+        payload = json.dumps(
+            {
+                "scene_name": 42,
+                "code": "from manim import *\nclass S(Scene): pass\n",
+                "dependencies": [],
+                "metadata": {},
+            }
+        )
         with patch.object(CodexCliProvider, "_run_codex", return_value=payload):
             provider = CodexCliProvider(config=RuntimeConfig(), runner=lambda *a, **kw: None)
             with pytest.raises(RuntimeError, match="Codex CLI returned JSON that did not match GeneratedCode"):
@@ -283,6 +289,7 @@ class TestParseGeneratedCodeValidationError:
 # ===================================================================
 # 5. _build_repair_prompt()  (line 121)
 # ===================================================================
+
 
 class TestBuildRepairPrompt:
     """Coverage for the _build_repair_prompt method."""
@@ -333,6 +340,7 @@ class TestBuildRepairPrompt:
 # 6. _extract_json_object()  (lines 140-143)
 # ===================================================================
 
+
 class TestExtractJsonObjectMarkdownCodeFence:
     """Coverage for markdown code fence stripping in _extract_json_object."""
 
@@ -373,6 +381,7 @@ class TestExtractJsonObjectMarkdownCodeFence:
 # 7. _extract_json_object() fallback extraction  (lines 146-151)
 # ===================================================================
 
+
 class TestExtractJsonObjectFallback:
     """Coverage for JSON decode failure and fallback to {{ ... }} extraction."""
 
@@ -388,11 +397,7 @@ class TestExtractJsonObjectFallback:
         """Fallback works with multi-line JSON objects."""
         from math_to_manim.providers.codex_cli import _extract_json_object
 
-        text = (
-            "Explanation...\n"
-            '{\n  "scene_name": "Multi",\n  "code": "line1\\nline2"\n}\n'
-            "More text."
-        )
+        text = 'Explanation...\n{\n  "scene_name": "Multi",\n  "code": "line1\\nline2"\n}\nMore text.'
         result = _extract_json_object(text)
         assert result == {"scene_name": "Multi", "code": "line1\nline2"}
 
@@ -422,6 +427,7 @@ class TestExtractJsonObjectFallback:
 # 8. _extract_json_object() non-dict result  (line 153)
 # ===================================================================
 
+
 class TestExtractJsonObjectNonDict:
     """Coverage for the isinstance(parsed, dict) check."""
 
@@ -430,7 +436,7 @@ class TestExtractJsonObjectNonDict:
         from math_to_manim.providers.codex_cli import _extract_json_object
 
         with pytest.raises(RuntimeError, match="Codex CLI returned JSON, but it was not an object"):
-            _extract_json_object('[1, 2, 3]')
+            _extract_json_object("[1, 2, 3]")
 
     def test_parsed_string_raises(self):
         """A plain JSON string raises RuntimeError."""
@@ -457,6 +463,7 @@ class TestExtractJsonObjectNonDict:
 # ===================================================================
 # 9. generate_code() edge cases with mock runner
 # ===================================================================
+
 
 class TestGenerateCodeEdgeCases:
     """Additional generate_code() scenarios."""
@@ -572,7 +579,7 @@ class TestGenerateCodeEdgeCases:
         """When LLM wraps JSON in ```json ... ```, it's handled."""
         from math_to_manim.providers.codex_cli import CodexCliProvider
 
-        fence_output = '```json\n' + json.dumps(VALID_PAYLOAD) + '\n```'
+        fence_output = "```json\n" + json.dumps(VALID_PAYLOAD) + "\n```"
         with patch.object(CodexCliProvider, "_run_codex", return_value=fence_output):
             provider = CodexCliProvider(config=RuntimeConfig(), runner=lambda *a, **kw: None)
             generated = provider.generate_code(_make_spec())

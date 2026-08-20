@@ -28,20 +28,16 @@ jobs:
 
       - name: Lint with ruff
         run: |
-          python -m ruff check math_to_manim/
+          python -m ruff check math_to_manim/ tests/
 
       - name: Check formatting
         run: |
-          python -m ruff format --check math_to_manim/
+          python -m ruff format --check math_to_manim/ tests/
 
-      - name: Test with pytest
-        run: |
-          python -m pytest tests/ -q
-
-      - name: Coverage report
+      - name: Test with coverage
         run: |
           python -m coverage run -m pytest tests/ -q
-          python -m coverage report
+          python -m coverage report --fail-under=85
 
       - name: CLI smoke test (deterministic)
         run: |

@@ -2,56 +2,17 @@ from __future__ import annotations
 
 from typing import Any
 
-import pydantic
-from pydantic import BaseModel, Field  # noqa: F401 — Field re-exported for submodules
-
-PYDANTIC_V2 = int(pydantic.VERSION.split(".", 1)[0]) >= 2
-
-if PYDANTIC_V2:
-    from pydantic import ConfigDict, model_validator
-
-    root_validator = None  # type: ignore[assignment]
-else:
-    from pydantic import root_validator  # noqa: F811, F401 — re-export for v1
-
-    ConfigDict = None  # type: ignore[assignment]
-    model_validator = None  # type: ignore[assignment]
+from pydantic import BaseModel, ConfigDict, Field  # noqa: F401 — Field re-exported for submodules
 
 
 class ArtifactModel(BaseModel):
     """Shared Pydantic base for pipeline artifacts."""
 
-    if PYDANTIC_V2:
-        model_config = ConfigDict(
-            extra="forbid",
-            populate_by_name=True,
-            validate_assignment=True,
-        )
-    else:
-
-        class Config:
-            extra = "forbid"
-            allow_population_by_field_name = True
-            validate_assignment = True
-
-        @classmethod
-        def model_validate(cls, obj: Any) -> ArtifactModel:
-            return cls.parse_obj(obj)
-
-        @classmethod
-        def model_json_schema(cls, *args: Any, **kwargs: Any) -> dict:
-            return cls.schema(*args, **kwargs)
-
-        def model_dump(self, *args: Any, **kwargs: Any) -> dict:
-            kwargs.pop("mode", None)
-            return self.dict(*args, **kwargs)
-
-        def model_dump_json(self, *args: Any, **kwargs: Any) -> str:
-            kwargs.pop("mode", None)
-            return self.json(*args, **kwargs)
-
-        def model_copy(self, *args: Any, **kwargs: Any) -> ArtifactModel:
-            return self.copy(*args, **kwargs)
+    model_config = ConfigDict(
+        extra="forbid",
+        populate_by_name=True,
+        validate_assignment=True,
+    )
 
     def to_public_dict(self) -> dict[str, Any]:
         """Return a JSON-safe representation for CLI/API responses."""

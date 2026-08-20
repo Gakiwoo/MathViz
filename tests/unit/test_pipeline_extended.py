@@ -1,11 +1,10 @@
 """Extended tests for AnimationPipeline covering repair loops and edge cases."""
+
 from __future__ import annotations
 
 import json
 from pathlib import Path
 from unittest.mock import Mock, patch
-
-import pytest
 
 from math_to_manim.agents.render import RenderAgent
 from math_to_manim.agents.static_review import StaticReviewAgent
@@ -13,7 +12,6 @@ from math_to_manim.agents.video_review import VideoReviewAgent
 from math_to_manim.config import RuntimeConfig
 from math_to_manim.pipeline.runner import AnimationPipeline, _safe_scene_name
 from math_to_manim.schemas import (
-    AnimationPackage,
     ConceptIntent,
     CurriculumPlan,
     GeneratedCode,
@@ -22,17 +20,16 @@ from math_to_manim.schemas import (
     ManimSceneSpec,
     MathPacket,
     RenderResult,
-    UserRequest,
     ValidationIssue,
     ValidationReport,
     VideoReviewReport,
     VisualStoryboard,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_deterministic_generated_code(scene_name: str = "TestScene") -> GeneratedCode:
     """Return a GeneratedCode whose code is valid enough for write_generated_code."""
@@ -67,11 +64,12 @@ def _make_failing_validation(*, messages: list[str] | None = None) -> Validation
     )
 
 
-def _make_rendered_ok(scene_name: str = "TestScene") -> RenderResult:
+def _make_rendered_ok(scene_name: str = "TestScene", *, runs_dir: Path | None = None) -> RenderResult:
+    output_path = str(runs_dir / "media" / "output.mp4") if runs_dir else "/fake/output.mp4"
     return RenderResult(
         status="succeeded",
         scene_name=scene_name,
-        output_path="/fake/output.mp4",
+        output_path=output_path,
         command=["python", "-m", "manim"],
         stdout="render ok",
         stderr=None,
@@ -130,9 +128,7 @@ class TestStaticValidationRepairLoop:
     re-validate.
     """
 
-    def test_repair_loop_reruns_after_failed_validation(
-        self, tmp_path: Path
-    ) -> None:
+    def test_repair_loop_reruns_after_failed_validation(self, tmp_path: Path) -> None:
         """Validation fails on the first attempt and passes after one repair."""
         config = RuntimeConfig(
             runs_dir=tmp_path,
@@ -143,12 +139,8 @@ class TestStaticValidationRepairLoop:
         _stub_pipeline_agents(pipeline)
 
         # First validation call → fail; second (after repair) → pass
-        pipeline.static_review_agent.run = Mock(
-            side_effect=[_make_failing_validation(), _make_passing_validation()]
-        )
-        pipeline.codegen_agent.repair = Mock(
-            return_value=_make_deterministic_generated_code()
-        )
+        pipeline.static_review_agent.run = Mock(side_effect=[_make_failing_validation(), _make_passing_validation()])
+        pipeline.codegen_agent.repair = Mock(return_value=_make_deterministic_generated_code())
 
         package = pipeline.generate(
             prompt="test prompt",
@@ -179,12 +171,8 @@ class TestStaticValidationRepairLoop:
         _stub_pipeline_agents(pipeline)
 
         # Always fail — one initial + two repair attempts = 3 calls
-        pipeline.static_review_agent.run = Mock(
-            return_value=_make_failing_validation()
-        )
-        pipeline.codegen_agent.repair = Mock(
-            return_value=_make_deterministic_generated_code()
-        )
+        pipeline.static_review_agent.run = Mock(return_value=_make_failing_validation())
+        pipeline.codegen_agent.repair = Mock(return_value=_make_deterministic_generated_code())
 
         package = pipeline.generate(
             prompt="test prompt",
@@ -215,12 +203,8 @@ class TestStaticValidationRepairLoop:
 
         # Force validation to fail so the only thing keeping the repair
         # loop from running is the ``deterministic=True`` check.
-        pipeline.static_review_agent.run = Mock(
-            return_value=_make_failing_validation()
-        )
-        pipeline.codegen_agent.repair = Mock(
-            return_value=_make_deterministic_generated_code()
-        )
+        pipeline.static_review_agent.run = Mock(return_value=_make_failing_validation())
+        pipeline.codegen_agent.repair = Mock(return_value=_make_deterministic_generated_code())
 
         pipeline.generate(
             prompt="test prompt",
@@ -248,12 +232,8 @@ class TestRenderRepairLoop:
         )
         pipeline = AnimationPipeline(config)
         _stub_pipeline_agents(pipeline)
-        pipeline.static_review_agent.run = Mock(
-            return_value=_make_passing_validation()
-        )
-        pipeline.render_agent.run = Mock(
-            return_value=_make_rendered_ok()
-        )
+        pipeline.static_review_agent.run = Mock(return_value=_make_passing_validation())
+        pipeline.render_agent.run = Mock(return_value=_make_rendered_ok(runs_dir=tmp_path))
 
         package = pipeline.generate(
             prompt="test prompt",
@@ -275,17 +255,12 @@ class TestRenderRepairLoop:
         _stub_pipeline_agents(pipeline)
 
         # Validation always passes
-        pipeline.static_review_agent.run = Mock(
-            return_value=_make_passing_validation()
-        )
+        pipeline.static_review_agent.run = Mock(return_value=_make_passing_validation())
         # Render fails first, succeeds after repair
         pipeline.render_agent.run = Mock(
-            side_effect=[_make_rendered_failed(stderr="NameError: x not defined"),
-                         _make_rendered_ok()]
+            side_effect=[_make_rendered_failed(stderr="NameError: x not defined"), _make_rendered_ok(runs_dir=tmp_path)]
         )
-        pipeline.codegen_agent.repair = Mock(
-            return_value=_make_deterministic_generated_code()
-        )
+        pipeline.codegen_agent.repair = Mock(return_value=_make_deterministic_generated_code())
 
         package = pipeline.generate(
             prompt="test prompt",
@@ -312,16 +287,10 @@ class TestRenderRepairLoop:
         _stub_pipeline_agents(pipeline)
 
         # Validation always passes
-        pipeline.static_review_agent.run = Mock(
-            return_value=_make_passing_validation()
-        )
+        pipeline.static_review_agent.run = Mock(return_value=_make_passing_validation())
         # Render always fails
-        pipeline.render_agent.run = Mock(
-            return_value=_make_rendered_failed(stderr="render error")
-        )
-        pipeline.codegen_agent.repair = Mock(
-            return_value=_make_deterministic_generated_code()
-        )
+        pipeline.render_agent.run = Mock(return_value=_make_rendered_failed(stderr="render error"))
+        pipeline.codegen_agent.repair = Mock(return_value=_make_deterministic_generated_code())
 
         package = pipeline.generate(
             prompt="test prompt",
@@ -349,17 +318,12 @@ class TestRenderRepairLoop:
         _stub_pipeline_agents(pipeline)
 
         # Validation always passes (both initial and within repair loop)
-        pipeline.static_review_agent.run = Mock(
-            return_value=_make_passing_validation()
-        )
+        pipeline.static_review_agent.run = Mock(return_value=_make_passing_validation())
         # Render fails → repair → render succeeds
         pipeline.render_agent.run = Mock(
-            side_effect=[_make_rendered_failed(stderr="error"),
-                         _make_rendered_ok()]
+            side_effect=[_make_rendered_failed(stderr="error"), _make_rendered_ok(runs_dir=tmp_path)]
         )
-        pipeline.codegen_agent.repair = Mock(
-            return_value=_make_deterministic_generated_code()
-        )
+        pipeline.codegen_agent.repair = Mock(return_value=_make_deterministic_generated_code())
 
         pipeline.generate(
             prompt="test prompt",
@@ -380,9 +344,7 @@ class TestRenderRepairLoop:
         _stub_pipeline_agents(pipeline)
 
         # Validation fails permanently
-        pipeline.static_review_agent.run = Mock(
-            return_value=_make_failing_validation()
-        )
+        pipeline.static_review_agent.run = Mock(return_value=_make_failing_validation())
 
         package = pipeline.generate(
             prompt="test prompt",
@@ -390,7 +352,7 @@ class TestRenderRepairLoop:
         )
 
         assert package.render_result is not None
-        assert package.render_result.status == "failed"
+        assert package.render_result.status == "skipped"
         assert package.render_result.stderr is not None
         assert "validation did not pass" in package.render_result.stderr
         # render_agent.run should never have been called
@@ -462,14 +424,10 @@ class TestRenderExisting:
                 "        self.wait(1)\n"
             ),
         )
-        (run_dir / "generated_code.json").write_text(
-            json.dumps(code.to_public_dict(), indent=2), encoding="utf-8"
-        )
+        (run_dir / "generated_code.json").write_text(json.dumps(code.to_public_dict(), indent=2), encoding="utf-8")
         return run_dir
 
-    def test_render_existing_reads_code_and_writes_reports(
-        self, tmp_path: Path
-    ) -> None:
+    def test_render_existing_reads_code_and_writes_reports(self, tmp_path: Path) -> None:
         """Verifies the method reads ``generated_code.json``, runs validation,
         renders, and persists ``validation_report.json`` and ``render_result.json``."""
         run_dir = self._create_fake_run_dir(tmp_path)
@@ -504,9 +462,7 @@ class TestRenderExisting:
         mock_validate.assert_called_once()
         mock_render.assert_called_once()
 
-    def test_render_existing_skips_render_when_validation_fails(
-        self, tmp_path: Path
-    ) -> None:
+    def test_render_existing_skips_render_when_validation_fails(self, tmp_path: Path) -> None:
         """When static validation fails, render_existing writes a 'skipped'
         render result instead of calling RenderAgent."""
         run_dir = self._create_fake_run_dir(tmp_path)
@@ -545,7 +501,7 @@ class TestRenderExisting:
         )
 
         with (
-            patch.object(StaticReviewAgent, "run", return_value=_make_passing_validation()) as mock_validate,
+            patch.object(StaticReviewAgent, "run", return_value=_make_passing_validation()),
             patch.object(RenderAgent, "run", return_value=_make_rendered_ok()) as mock_render,
             patch.object(VideoReviewAgent, "run", return_value=VideoReviewReport(approved=False, score=0.0)),
         ):

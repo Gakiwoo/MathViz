@@ -106,7 +106,7 @@ PY
 then
   echo "  Installing web packages (this may take a minute)..."
   "$PYTHON" -m pip install -e ".[web]" -q --timeout 60 2>/dev/null || \
-    { echo "  [INFO] Lightweight install (skipping gradio)..."
+    { echo "  [INFO] Lightweight install (core web packages)..."
       "$PYTHON" -m pip install -e . fastapi uvicorn httpx pyyaml -q --timeout 60 2>/dev/null || \
         { echo "  [WARN] Pip install had issues, retrying core packages only..."
           "$PYTHON" -m pip install fastapi uvicorn httpx pyyaml -q --timeout 120 2>/dev/null; }; }

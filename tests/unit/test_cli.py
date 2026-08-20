@@ -56,12 +56,18 @@ def test_parser_generate_optional_args() -> None:
         [
             "generate",
             "test prompt",
-            "--audience-level", "university",
-            "--duration", "120",
-            "--style", "geometric",
-            "--quality", "h",
-            "--model", "gpt-4",
-            "--codegen-provider", "codex-cli",
+            "--audience-level",
+            "university",
+            "--duration",
+            "120",
+            "--style",
+            "geometric",
+            "--quality",
+            "h",
+            "--model",
+            "gpt-4",
+            "--codegen-provider",
+            "codex-cli",
             "--codex-full-auto",
         ]
     )
@@ -108,9 +114,7 @@ def test_main_generate_deterministic_no_render_returns_zero() -> None:
 
 def test_main_generate_json_output_returns_zero() -> None:
     with TemporaryDirectory() as tmpdir:
-        exit_code = main(
-            ["generate", "Test prompt", "--deterministic", "--no-render", "--json", "--runs-dir", tmpdir]
-        )
+        exit_code = main(["generate", "Test prompt", "--deterministic", "--no-render", "--json", "--runs-dir", tmpdir])
 
     assert exit_code == 0
 

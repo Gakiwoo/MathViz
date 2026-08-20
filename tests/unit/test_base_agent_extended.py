@@ -16,11 +16,9 @@ import types
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-import pytest
 import pydantic
 
 from math_to_manim.agents.base import (
-    AgentInvocation,
     StageAgent,
     load_openai_agents_sdk,
     mark_sdk_metadata,
@@ -29,12 +27,12 @@ from math_to_manim.agents.base import (
 )
 from math_to_manim.config import RuntimeConfig
 
-
 # ── Helpers ──────────────────────────────────────────────────────────
 
 
 class _Artifact(pydantic.BaseModel):
     """Minimal Pydantic artifact for mark_sdk_metadata tests."""
+
     metadata: dict[str, Any] | None = None
     content: str = ""
 
@@ -113,9 +111,7 @@ class TestStageAgentInvocation:
                 return value
 
         agent = TestStage(config=RuntimeConfig(model="gpt-4o-mini"))
-        inv = agent.invocation(
-            used_sdk=False, stage="render", attempt=3, tags=["a", "b"]
-        )
+        inv = agent.invocation(used_sdk=False, stage="render", attempt=3, tags=["a", "b"])
         assert inv.agent_name == "multi_stage"
         assert inv.model == "gpt-4o-mini"
         assert inv.used_sdk is False

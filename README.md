@@ -226,13 +226,13 @@ math_to_manim/
 | 组件 | 技术 | 说明 |
 |------|------|------|
 | 语言 | Python 3.10+ | 类型标注全覆盖 |
-| 数据模型 | Pydantic | v1/v2 双兼容 |
+| 数据模型 | Pydantic v2 | 严格模式 + 契约校验 |
 | AI 生成 | OpenAI Agents SDK | 结构化输出 + 多模型支持 |
 | 动画引擎 | Manim CE 0.20+ | 社区版数学动画 |
 | 视频处理 | FFmpeg | 格式转换 + GIF 导出 |
 | 公式渲染 | LaTeX (可选) | 缺省时自动降级为纯文本 |
 | Web 前端 | FastAPI + Uvicorn | 教师控制台 |
-| 代码质量 | ruff + pytest | lint + 84 测试 |
+| 代码质量 | ruff + pytest | lint + 244 测试 |
 
 ---
 

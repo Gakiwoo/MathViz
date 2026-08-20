@@ -8,10 +8,12 @@ import pytest
 from math_to_manim.app.run_summary import (
     check_render_health,
     list_runs,
+    restage_run,
     safe_run_dir,
     summarize_run,
 )
-from math_to_manim.schemas import GeneratedCode
+from math_to_manim.config import RuntimeConfig
+from math_to_manim.schemas import ConceptIntent, GeneratedCode
 from math_to_manim.tools.manim_fixes import preview_safe_generated_code
 
 
@@ -158,6 +160,48 @@ def test_list_runs_orders_newest_first(tmp_path) -> None:
     newer.mkdir()
 
     assert [run["run_id"] for run in list_runs(runs_dir)] == ["20260518T010000Z-new", "20260518T000000Z-old"]
+
+
+def test_restage_run_reruns_valid_stage(tmp_path) -> None:
+    run_dir = tmp_path / "20260518T000000Z-demo"
+    run_dir.mkdir()
+    write_json(
+        run_dir / "request.json",
+        {
+            "prompt": "Explain derivatives",
+            "target_audience": "high_school",
+            "duration_seconds": 60,
+            "style": "cinematic",
+        },
+    )
+
+    result = restage_run(run_dir, RuntimeConfig(deterministic=True), "intent")
+
+    assert result["stage"] == "intent"
+    assert result["status"] == "ok"
+    intent = json.loads((run_dir / "intent.json").read_text(encoding="utf-8"))
+    assert intent["primary_concept"]
+    ConceptIntent.model_validate(intent)
+
+
+def test_restage_run_unknown_stage_returns_error(tmp_path) -> None:
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+
+    result = restage_run(run_dir, RuntimeConfig(), "bogus_stage")
+
+    assert "error" in result
+    assert "bogus_stage" in result["error"]
+
+
+def test_restage_run_missing_input_artifact_returns_error(tmp_path) -> None:
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+
+    result = restage_run(run_dir, RuntimeConfig(deterministic=True), "intent")
+
+    assert "error" in result
+    assert "Missing input artifact" in result["error"]
 
 
 def test_check_render_health_reports_missing_fake_binaries() -> None:

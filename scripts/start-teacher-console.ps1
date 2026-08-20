@@ -99,7 +99,7 @@ if (-not $webDepsOk) {
         Invoke-PipInstall -Arguments @("-e", ".[web]", "-q", "--timeout", "60")
         $webDepsOk = $true
     } catch {
-        Write-Warning "Full web install failed. Trying lightweight install (skipping gradio)..."
+        Write-Warning "Full web install failed. Trying lightweight install (core web packages)..."
     }
 
     if (-not $webDepsOk) {

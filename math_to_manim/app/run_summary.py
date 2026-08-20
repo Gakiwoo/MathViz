@@ -183,6 +183,7 @@ def render_existing_run(run_dir: Path, config: RuntimeConfig) -> dict[str, Any]:
         return summarize_run(run_dir)
     except Exception as exc:
         import traceback
+
         tb = traceback.format_exc()
         print(f"[render_existing_run] CRASH: {exc}\n" + tb, flush=True)
         save_json(
@@ -201,10 +202,14 @@ def render_existing_run(run_dir: Path, config: RuntimeConfig) -> dict[str, Any]:
             "video_url": None,
             "error": {"stage": "render", "message": str(exc), "details": tb[-1200:]},
             "sections": {
-                "teaching_plan": "", "knowledge_graph": "", "storyboard": "",
-                "manim_code": "", "run_bundle": "",
+                "teaching_plan": "",
+                "knowledge_graph": "",
+                "storyboard": "",
+                "manim_code": "",
+                "run_bundle": "",
             },
         }
+
 
 def _error_summary(
     validation: dict[str, Any], render: dict[str, Any], review: dict[str, Any] | None = None
@@ -238,7 +243,6 @@ def _read_json(path: Path) -> dict[str, Any]:
         return json.loads(path.read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
-
 
 
 def _tool_status(binary: str, help_text: str, *, required: bool = False) -> dict[str, Any]:
@@ -345,9 +349,7 @@ def restage_run(run_dir: Path, config: RuntimeConfig, stage: str) -> dict[str, A
         valid = sorted(_STAGE_AGENTS)
         return {"error": f"Unknown stage {stage!r}. Valid stages: {', '.join(valid)}"}
 
-    agent_cls_name, input_cls_name = _STAGE_AGENTS[stage]
-    agent_cls = locals()[agent_cls_name]
-    input_cls = locals()[input_cls_name]
+    agent_cls, input_cls = _STAGE_AGENTS[stage]
 
     input_artifact = _read_artifact(run_dir, _input_artifact_for(stage))
     if not input_artifact:

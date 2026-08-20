@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from datetime import datetime, timezone
@@ -196,13 +197,16 @@ class AnimationPipeline:
             render_result = state.put(
                 "render_result",
                 RenderResult(
-                    status="failed",
+                    status="skipped",
                     scene_name=generated.scene_name,
                     output_path=None,
                     command=[],
                     stdout="",
                     stderr="render skipped" if not render else "static validation did not pass",
-                    metadata={"skipped": True},
+                    metadata={
+                        "skipped": True,
+                        "reason": "render_not_requested" if not render else "static_validation_failed",
+                    },
                 ),
             )
         save_artifact(run_dir, "render_result", render_result)
@@ -245,7 +249,11 @@ class AnimationPipeline:
         return package
 
     def _create_run_dir(self, prompt: str) -> Path:
-        slug = re.sub(r"[^a-zA-Z0-9]+", "-", prompt.lower()).strip("-")[:48] or "animation"
+        slug = re.sub(r"[^a-zA-Z0-9]+", "-", prompt.lower()).strip("-")[:48]
+        if not slug:
+            # Non-ASCII prompts (e.g. Chinese) produce an empty slug; fall back
+            # to a short content hash so run dirs stay unique and recognizable.
+            slug = f"prompt-{hashlib.sha1(prompt.encode('utf-8')).hexdigest()[:8]}"
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         run_dir = self.config.runs_dir / f"{timestamp}-{slug}"
         run_dir.mkdir(parents=True, exist_ok=False)

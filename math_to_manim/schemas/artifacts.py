@@ -4,7 +4,9 @@ from collections import deque
 from collections.abc import Iterable
 from typing import Any, Literal
 
-from .base import PYDANTIC_V2, ArtifactModel, Field, model_validator, root_validator
+from pydantic import model_validator
+
+from .base import ArtifactModel, Field
 
 GraphNodeKind = Literal[
     "concept",
@@ -117,23 +119,10 @@ class KnowledgeGraph(ArtifactModel):
     root_node_id: str | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
 
-    if PYDANTIC_V2:
-
-        @model_validator(mode="after")
-        def _validate_graph(self) -> KnowledgeGraph:
-            _validate_graph_integrity(self.nodes, self.edges, self.root_node_id)
-            return self
-
-    else:
-
-        @root_validator(skip_on_failure=True)
-        def _validate_graph(cls, values: dict[str, Any]) -> dict[str, Any]:  # noqa: N805
-            _validate_graph_integrity(
-                values.get("nodes") or [],
-                values.get("edges") or [],
-                values.get("root_node_id"),
-            )
-            return values
+    @model_validator(mode="after")
+    def _validate_graph(self) -> KnowledgeGraph:
+        _validate_graph_integrity(self.nodes, self.edges, self.root_node_id)
+        return self
 
     @property
     def node_ids(self) -> set[str]:
@@ -352,19 +341,10 @@ class ValidationReport(ArtifactModel):
     summary: str | None = None
     metadata: dict[str, Any] = Field(default_factory=dict)
 
-    if PYDANTIC_V2:
-
-        @model_validator(mode="after")
-        def _validate_status(self) -> ValidationReport:
-            _validate_report_status(self.status, self.issues)
-            return self
-
-    else:
-
-        @root_validator(skip_on_failure=True)
-        def _validate_status(cls, values: dict[str, Any]) -> dict[str, Any]:  # noqa: N805
-            _validate_report_status(values.get("status"), values.get("issues") or [])
-            return values
+    @model_validator(mode="after")
+    def _validate_status(self) -> ValidationReport:
+        _validate_report_status(self.status, self.issues)
+        return self
 
     @property
     def is_successful(self) -> bool:

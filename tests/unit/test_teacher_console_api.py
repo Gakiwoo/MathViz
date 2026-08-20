@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import pytest
 
 pytest.importorskip("fastapi")
@@ -8,6 +10,31 @@ pytest.importorskip("httpx")
 from fastapi.testclient import TestClient
 
 from math_to_manim.app.api import _should_use_deterministic_generation, create_app
+
+# Environment variables that RuntimeConfig.from_env() reads and that
+# load_local_config falls back to.  Tests must be isolated from the
+# project-root .env.m2m2 so that a real API key never leaks into a
+# deterministic-only test and triggers a live API call.
+_MANAGED_ENV_VARS = (
+    "OPENAI_API_KEY",
+    "OPENAI_BASE_URL",
+    "M2M2_MODEL",
+    "OPENAI_MODEL",
+    "M2M2_PROVIDER_ID",
+    "M2M2_RUNS_DIR",
+    "M2M2_DETERMINISTIC",
+    "M2M2_TRACE",
+)
+
+
+@pytest.fixture(autouse=True)
+def _isolate_from_project_env() -> None:
+    """Remove env vars that may have been loaded from the root .env.m2m2."""
+    saved = {k: os.environ.pop(k, None) for k in _MANAGED_ENV_VARS}
+    yield
+    for k, v in saved.items():
+        if v is not None:
+            os.environ[k] = v
 
 
 def test_config_endpoints_save_and_mask_key(tmp_path) -> None:
@@ -143,6 +170,42 @@ def test_restage_without_stage_returns_400(tmp_path) -> None:
     assert response.status_code == 400
     data = response.json()
     assert "detail" in data
+
+
+def test_restage_valid_stage_endpoint_reruns_artifact(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    gen = client.post(
+        "/api/generate",
+        json={"prompt": "Explain why derivatives are slopes", "deterministic": True},
+    )
+    assert gen.status_code == 200
+    run_id = gen.json()["run_id"]
+
+    response = client.post(f"/api/runs/{run_id}/restage", json={"stage": "intent"})
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data["run_id"] == run_id
+    assert (tmp_path / "runs" / run_id / "intent.json").exists()
+
+
+def test_restage_unknown_stage_endpoint_returns_400(tmp_path) -> None:
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    gen = client.post(
+        "/api/generate",
+        json={"prompt": "Explain why derivatives are slopes", "deterministic": True},
+    )
+    run_id = gen.json()["run_id"]
+
+    response = client.post(f"/api/runs/{run_id}/restage", json={"stage": "bogus_stage"})
+
+    assert response.status_code == 400
+    data = response.json()
+    assert "bogus_stage" in str(data["detail"])
 
 
 def test_video_nonexistent_run_returns_404(tmp_path) -> None:

@@ -34,7 +34,9 @@ class StoryboardAgent(StageAgent[MathPacket, VisualStoryboard]):
         topic = math_packet.metadata.get("curriculum_title") or "概念"
         equations = [equation.latex for equation in math_packet.key_equations]
         scene_titles = _topic_scene_titles(topic)
-        per_scene_duration = max(8, (math_packet.metadata.get("requested_duration_seconds", 40) or 40) // len(scene_titles))
+        per_scene_duration = max(
+            8, (math_packet.metadata.get("requested_duration_seconds", 40) or 40) // len(scene_titles)
+        )
 
         scenes = []
         for index, title in enumerate(scene_titles, start=1):

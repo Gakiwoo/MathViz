@@ -14,7 +14,9 @@ from math_to_manim.schemas import RenderResult, UserRequest, VideoReviewReport
 class TestVideoReviewAgent:
     def test_skipped_render_returns_needs_render_report(self) -> None:
         agent = VideoReviewAgent()
-        result = RenderResult(status="skipped", scene_name="TestScene", stderr="render skipped", metadata={"skipped": True})
+        result = RenderResult(
+            status="skipped", scene_name="TestScene", stderr="render skipped", metadata={"skipped": True}
+        )
         report = agent.run(result)
         assert isinstance(report, VideoReviewReport)
         assert report.approved is False
@@ -25,7 +27,9 @@ class TestVideoReviewAgent:
 
     def test_failed_render_with_no_output_path(self) -> None:
         agent = VideoReviewAgent()
-        result = RenderResult(status="failed", scene_name="TestScene", stderr="static validation did not pass", output_path=None)
+        result = RenderResult(
+            status="failed", scene_name="TestScene", stderr="static validation did not pass", output_path=None
+        )
         report = agent.run(result)
         assert report.score == 0.0
         assert report.approved is False
@@ -42,7 +46,9 @@ class TestVideoReviewAgent:
         agent = VideoReviewAgent()
         video_path = tmp_path / "output.mp4"
         video_path.write_bytes(b"\x00" * 1024)
-        result = RenderResult(status="succeeded", scene_name="TestScene", output_path=str(video_path), stdout="render ok")
+        result = RenderResult(
+            status="succeeded", scene_name="TestScene", output_path=str(video_path), stdout="render ok"
+        )
         report = agent.run(result)
         assert isinstance(report, VideoReviewReport)
         assert report.metadata["draft_review"] is not None
