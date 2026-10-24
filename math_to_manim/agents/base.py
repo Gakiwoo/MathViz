@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import warnings
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Generic, TypeVar
@@ -90,6 +91,21 @@ def load_openai_agents_sdk() -> dict[str, Any] | None:
         return None
 
 
+def _warn_sdk_unavailable() -> None:
+    """Tell the operator why the model chain did not run.
+
+    The SDK lives in the optional ``ai`` extra. Falling back silently would make
+    a misconfigured environment look like a successful deterministic run.
+    """
+
+    warnings.warn(
+        "OPENAI_API_KEY is set but the OpenAI Agents SDK is not installed, so this stage "
+        "fell back to deterministic output. Install it with: pip install 'mathviz[ai]'",
+        RuntimeWarning,
+        stacklevel=3,
+    )
+
+
 def maybe_run_sdk_agent(
     *,
     name: str,
@@ -112,6 +128,7 @@ def maybe_run_sdk_agent(
 
     sdk = load_openai_agents_sdk()
     if sdk is None:
+        _warn_sdk_unavailable()
         return None
 
     Agent = sdk["Agent"]  # noqa: N806
@@ -148,6 +165,7 @@ def run_structured_sdk_agent(
 
     sdk = load_openai_agents_sdk()
     if sdk is None:
+        _warn_sdk_unavailable()
         return None
 
     Agent = sdk["Agent"]  # noqa: N806
