@@ -10,7 +10,11 @@ from math_to_manim.agents.render import RenderAgent
 from math_to_manim.agents.static_review import StaticReviewAgent
 from math_to_manim.agents.video_review import VideoReviewAgent
 from math_to_manim.config import RuntimeConfig
-from math_to_manim.pipeline.runner import AnimationPipeline, _safe_scene_name
+from math_to_manim.pipeline.runner import (
+    AnimationPipeline,
+    _is_safe_scene_name,
+    _safe_scene_name,
+)
 from math_to_manim.schemas import (
     ConceptIntent,
     CurriculumPlan,
@@ -401,6 +405,35 @@ class TestSafeSceneName:
         'Generated'."""
         result = _safe_scene_name("!!! ### $$$")
         assert result == "GeneratedScene"
+
+    def test_class_name_from_chinese_prompt_is_ascii(self) -> None:
+        """A non-ASCII prompt has no ASCII words, so it must not leak CJK into
+        a Manim class name."""
+        result = _safe_scene_name("解释导数为什么是斜率")
+        assert result == "GeneratedScene"
+        assert result.isascii()
+
+
+class TestIsSafeSceneName:
+    """Covers the guard that decides whether a scene name may reach Manim."""
+
+    def test_accepts_ascii_identifier(self) -> None:
+        assert _is_safe_scene_name("DerivativeScene") is True
+
+    def test_rejects_non_ascii_name(self) -> None:
+        """Python 3 allows this identifier, but Manim CLI and Windows tooling do not."""
+
+        assert _is_safe_scene_name("导数为什么是斜率Scene") is False
+
+    def test_rejects_non_identifier(self) -> None:
+        assert _is_safe_scene_name("My Scene") is False
+
+    def test_rejects_overlong_name(self) -> None:
+        assert _is_safe_scene_name("A" * 80) is True
+        assert _is_safe_scene_name("A" * 81) is False
+
+    def test_rejects_empty_name(self) -> None:
+        assert _is_safe_scene_name("") is False
 
 
 # ---------------------------------------------------------------------------

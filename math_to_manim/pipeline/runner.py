@@ -314,7 +314,7 @@ def _attach_request_context(scene_spec: Any, *, prompt: str, style: str, desired
 
     scene_name = getattr(scene_spec, "scene_name", "") or "GeneratedScene"
     updates: dict[str, Any] = {}
-    if len(scene_name) > 80:
+    if not _is_safe_scene_name(scene_name):
         scene_name = _safe_scene_name(prompt)
         updates["scene_name"] = scene_name
 
@@ -331,7 +331,20 @@ def _attach_request_context(scene_spec: Any, *, prompt: str, style: str, desired
     return scene_spec.model_copy(update=updates)
 
 
+def _is_safe_scene_name(name: str) -> bool:
+    """True when the name is usable as a Manim scene class across platforms.
+
+    Manim class names reach the CLI and the filesystem, so they must stay ASCII.
+    Python 3 accepts non-ASCII identifiers, but Windows consoles, shell quoting,
+    and external tooling do not reliably do the same.
+    """
+
+    return bool(name) and len(name) <= 80 and name.isascii() and name.isidentifier()
+
+
 def _safe_scene_name(prompt: str) -> str:
+    """Build an ASCII-safe Manim class name from a prompt."""
+
     words = re.findall(r"[A-Za-z0-9]+", prompt)
     selected = words[:8] or ["Generated"]
     class_name = "".join(word[:16].capitalize() for word in selected)
