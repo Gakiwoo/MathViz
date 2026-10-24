@@ -49,6 +49,7 @@ Thumbs.db
 .codebuddy/
 .superpowers/
 .playwright-cli/
+.mimosa/
 
 # Build artifacts
 build/
