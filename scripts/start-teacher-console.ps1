@@ -282,4 +282,7 @@ Write-Host "  Teacher console: $Url"
 Write-Host "  Press Ctrl+C to stop."
 Write-Host ""
 
+# The console refuses non-loopback binds unless a token is configured.
+$env:MATHVIZ_BIND_HOST = $HostName
+
 & $VenvPython -m uvicorn "math_to_manim.app.api:create_app" --factory --host $HostName --port $Port

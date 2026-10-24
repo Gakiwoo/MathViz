@@ -24,6 +24,10 @@ _MANAGED_ENV_VARS = (
     "M2M2_RUNS_DIR",
     "M2M2_DETERMINISTIC",
     "M2M2_TRACE",
+    # Console auth / bind guard. Must be unset unless a test opts in, so the
+    # default local-only, token-free console keeps working.
+    "MATHVIZ_API_TOKEN",
+    "MATHVIZ_BIND_HOST",
 )
 
 
@@ -276,3 +280,47 @@ def test_generate_without_api_key_uses_deterministic(tmp_path) -> None:
     data = response.json()
     assert "status" in data
     assert data["status"]["validation"] in ("passed", "failed")
+
+
+def test_api_stays_open_when_no_token_configured(tmp_path) -> None:
+    """The local-only console must keep working out of the box."""
+
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    assert client.get("/api/runs").status_code == 200
+
+
+def test_api_requires_token_when_configured(tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv("MATHVIZ_API_TOKEN", "s3cret")
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    assert client.get("/api/runs").status_code == 401
+    assert client.get("/api/runs", headers={"Authorization": "Bearer wrong"}).status_code == 401
+    assert client.get("/api/runs", headers={"Authorization": "Bearer s3cret"}).status_code == 200
+    assert client.get("/api/runs", headers={"X-API-Key": "s3cret"}).status_code == 200
+
+    # Static assets stay reachable; only /api routes are guarded.
+    assert client.get("/").status_code in (200, 404)
+
+
+def test_non_loopback_bind_without_token_is_refused(tmp_path, monkeypatch) -> None:
+    """Exposing the console beyond localhost must require a token."""
+
+    monkeypatch.setenv("MATHVIZ_BIND_HOST", "0.0.0.0")
+    monkeypatch.delenv("MATHVIZ_API_TOKEN", raising=False)
+
+    with pytest.raises(RuntimeError, match="MATHVIZ_API_TOKEN"):
+        create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+
+
+def test_non_loopback_bind_with_token_is_allowed(tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv("MATHVIZ_BIND_HOST", "0.0.0.0")
+    monkeypatch.setenv("MATHVIZ_API_TOKEN", "s3cret")
+
+    app = create_app(config_path=tmp_path / ".env.m2m2", runs_dir=tmp_path / "runs")
+    client = TestClient(app)
+
+    assert client.get("/api/runs").status_code == 401
+    assert client.get("/api/runs", headers={"Authorization": "Bearer s3cret"}).status_code == 200

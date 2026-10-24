@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+import secrets
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +27,14 @@ from math_to_manim.pipeline.runner import AnimationPipeline
 
 STATIC_DIR = Path(__file__).parent / "static"
 
+LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1", ""})
+
+
+def _is_loopback_host(host: str) -> bool:
+    """True when the console is only reachable from this machine."""
+
+    return host.strip() in LOOPBACK_HOSTS
+
 
 def _should_use_deterministic_generation(payload: dict[str, Any], *, has_api_key: bool) -> bool:
     """Default the teacher console to the fast local path unless AI is requested."""
@@ -38,18 +48,47 @@ def _should_use_deterministic_generation(payload: dict[str, Any], *, has_api_key
 
 def create_app(config_path: str | Path | None = None, runs_dir: str | Path | None = None):
     try:
-        from fastapi import FastAPI, HTTPException
-        from fastapi.responses import FileResponse, Response
+        from fastapi import FastAPI, HTTPException, Request
+        from fastapi.responses import FileResponse, JSONResponse, Response
         from fastapi.staticfiles import StaticFiles
     except ImportError as exc:
         raise RuntimeError("Install the web extra to use the API: pip install -e .[web]") from exc
 
+    api_token = os.getenv("MATHVIZ_API_TOKEN", "").strip()
+    bind_host = os.getenv("MATHVIZ_BIND_HOST", "127.0.0.1").strip()
+    if not _is_loopback_host(bind_host) and not api_token:
+        raise RuntimeError(
+            f"Refusing to bind to {bind_host!r} without authentication. "
+            "Set MATHVIZ_API_TOKEN to require a bearer token, or bind to 127.0.0.1 for local-only use."
+        )
+
     config_file = Path(config_path) if config_path is not None else DEFAULT_CONFIG_PATH
     runs_dir_override = Path(runs_dir) if runs_dir is not None else None
 
-    app = FastAPI(title="Math-To-Manim Teacher Console")
+    app = FastAPI(title="MathViz Teacher Console")
     if STATIC_DIR.exists():
         app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+    @app.middleware("http")
+    async def require_api_token(request: Request, call_next):
+        """Guard API routes with a shared bearer token when one is configured.
+
+        Loopback-only use stays token-free so the local teacher console keeps
+        working out of the box; any non-loopback bind must set MATHVIZ_API_TOKEN.
+        """
+
+        if api_token and request.url.path.startswith("/api/"):
+            supplied = request.headers.get("x-api-key", "").strip()
+            authorization = request.headers.get("authorization", "")
+            if authorization[:7].lower() == "bearer ":
+                supplied = supplied or authorization[7:].strip()
+            if not secrets.compare_digest(supplied, api_token):
+                return JSONResponse(
+                    status_code=401,
+                    content={"message": "Unauthorized."},
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+        return await call_next(request)
 
     def runtime_config(*, deterministic: bool | None = None) -> RuntimeConfig:
         provider_config = load_local_config(config_file)

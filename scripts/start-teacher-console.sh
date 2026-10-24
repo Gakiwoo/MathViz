@@ -189,4 +189,7 @@ echo "  Teacher console: $URL"
 echo "  Press Ctrl+C to stop."
 echo ""
 
+# The console refuses non-loopback binds unless a token is configured.
+export MATHVIZ_BIND_HOST="$HOST"
+
 exec "$PYTHON" -m uvicorn "math_to_manim.app.api:create_app" --factory --host "$HOST" --port "$PORT"
