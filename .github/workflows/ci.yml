@@ -36,8 +36,13 @@ jobs:
 
       - name: Test with coverage
         run: |
-          python -m coverage run -m pytest tests/ -q
+          python -m coverage run -m pytest tests/ -q -rs 2>&1 | tee pytest.log
           python -m coverage report --fail-under=85
+          # A skipped test means an optional dependency is missing from the dev extra.
+          if grep -q "SKIPPED" pytest.log; then
+            echo "::error::Tests were skipped; add the missing dependency to the dev extra."
+            exit 1
+          fi
 
       - name: CLI smoke test (deterministic)
         run: |
