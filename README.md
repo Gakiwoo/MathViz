@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/showcase/assets/continuous-geometric-picture.gif" alt="MathViz 动画展示" width="760" />
+<img src="docs/showcase/assets/continuous-geometric-picture.gif" alt="MathViz 动画展示（历史资产·美术方向参考）" width="760" />
 
 # MathViz
 
@@ -28,6 +28,8 @@
   <a href="docs/showcase/README.md"><img src="docs/showcase/assets/hopf-fibration.gif" alt="Hopf fibration" width="24%" /></a>
   <a href="docs/showcase/README.md"><img src="docs/showcase/assets/fourier-epicycles.gif" alt="Fourier epicycles" width="24%" /></a>
 </p>
+
+> **关于上方展示动画**：这些 GIF 继承自原 Math-To-Manim 仓库，属于**历史资产与美术方向参考**，并非当前 MathViz 流水线的实际产出。想了解当前版本的真实能力，请直接运行下面的命令行冒烟示例。
 
 **MathViz 帮助教师、家教和家长将数学问题转化为可审查、可编辑、可复用的视觉化教学动画。**
 
@@ -162,7 +164,10 @@ math-to-manim generate "解释导数为什么是斜率" --deterministic --no-ren
 
 ### 4. 使用 AI 模型生成
 
+AI 生成依赖 OpenAI Agents SDK，位于可选 extra 中（不装也能用上面的确定性模式）：
+
 ```bash
+python -m pip install -e ".[ai]"
 export OPENAI_API_KEY="sk-..."
 math-to-manim generate "用旋转向量解释傅里叶级数" --no-render
 ```
@@ -227,12 +232,12 @@ math_to_manim/
 |------|------|------|
 | 语言 | Python 3.10+ | 类型标注全覆盖 |
 | 数据模型 | Pydantic v2 | 严格模式 + 契约校验 |
-| AI 生成 | OpenAI Agents SDK | 结构化输出 + 多模型支持 |
+| AI 生成 | OpenAI Agents SDK | 结构化输出 + 多模型支持（可选依赖 `.[ai]`） |
 | 动画引擎 | Manim CE 0.20+ | 社区版数学动画 |
 | 视频处理 | FFmpeg | 格式转换 + GIF 导出 |
 | 公式渲染 | LaTeX (可选) | 缺省时自动降级为纯文本 |
 | Web 前端 | FastAPI + Uvicorn | 教师控制台 |
-| 代码质量 | ruff + pytest | lint + 244 测试 |
+| 代码质量 | ruff + pytest | lint + 254 测试 |
 
 ---
 
